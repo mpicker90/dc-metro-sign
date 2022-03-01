@@ -40,14 +40,18 @@ class MetroApi:
         line = train['Line']
         destination = train['Destination']
         arrival = train['Min']
+        car = train['Car']
 
         if destination == 'No Passenger' or destination == 'NoPssenger' or destination == 'ssenger':
             destination = 'No Psngr'
 
         return {
             'line_color': MetroApi._get_line_color(line),
+            'line': line,
             'destination': destination,
-            'arrival': arrival
+            'arrival': arrival,
+            'car_length': car,
+            'car_color': MetroApi._get_car_color(car)
         }
     
     def _get_line_color(line: str) -> int:
@@ -63,3 +67,9 @@ class MetroApi:
             return 0x0000FF
         else:
             return 0xAAAAAA
+
+    def _get_car_color(car: str) -> int:
+        if car == 6:
+            return 0xFFFF00
+        else:
+            return 0x00FF00
