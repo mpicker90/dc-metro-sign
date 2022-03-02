@@ -1,5 +1,8 @@
 import displayio
-from adafruit_display_shapes.rect import Rect
+import board
+import rgbmatrix
+import framebufferio
+
 from adafruit_display_text.label import Label
 from adafruit_matrixportal.matrix import Matrix
 
@@ -21,7 +24,20 @@ class TrainBoard:
 
     def __init__(self, get_new_data):
         self.get_new_data = get_new_data
-
+        # MATRIX = rgbmatrix.RGBMatrix(
+        #     width=128, height=32, bit_depth=6, tile=2, serpentine=True,
+        #     rgb_pins=[board.MTX_R1,
+        #               board.MTX_G1,
+        #               board.MTX_B1,
+        #               board.MTX_R2,
+        #               board.MTX_G2,
+        #               board.MTX_B2],
+        #     addr_pins=[board.MTX_ADDRA,
+        #                board.MTX_ADDRB,
+        #                board.MTX_ADDRC,
+        #                board.MTX_ADDRD],
+        #     clock_pin=board.MTX_CLK, latch_pin=board.MTX_LAT,
+        #     output_enable_pin=board.MTX_OE)
         self.display = Matrix().display
 
         self.parent_group = displayio.Group(max_size=5)
@@ -80,7 +96,7 @@ class Train:
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
         self.destination_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
-        self.destination_label.x = 40
+        self.destination_label.x = 19
         self.destination_label.y = y
         self.destination_label.color = config['text_color']
         self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]
@@ -110,8 +126,8 @@ class Train:
         self.line_label.text = line[:config['train_line_width']]
 
     def set_car(self, car_length: str, car_color: int):
-        self.line_label.color = car_color
-        self.line_label.text = car_length[:config['car_length_max_characters']]
+        self.car_label.color = car_color
+        self.car_label.text = car_length[:config['car_length_max_characters']]
 
     def set_destination(self, destination: str):
         self.destination_label.text = destination[:config['destination_max_characters']]

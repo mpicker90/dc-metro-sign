@@ -43,7 +43,7 @@ config = {
 	'num_trains': 3,
 	'font': bitmap_font.load_font('lib/5x7.bdf'),
 
-	'character_width': 5,
+	'character_width': 4,
 	'character_height': 7,
 	'text_padding': 1,
 	'text_color': 0xFF7500,
