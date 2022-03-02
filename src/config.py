@@ -39,7 +39,7 @@ config = {
 	'refresh_interval': 5, # 5 seconds is a good middle ground for updates, as the processor takes its sweet ol time
 
 	# Display Settings
-	'matrix_width': 128,
+	'matrix_width': 64,
 	'num_trains': 3,
 	'font': bitmap_font.load_font('lib/5x7.bdf'),
 
@@ -61,5 +61,5 @@ config = {
 
 	'car_length_max_characters': 3,
 	'min_label_characters': 3,
-	'destination_max_characters': 8,
+	'destination_max_characters': 6,
 }
