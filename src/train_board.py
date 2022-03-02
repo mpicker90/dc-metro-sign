@@ -42,10 +42,40 @@ class TrainBoard:
 
         self.parent_group = displayio.Group(max_size=5)
 
+        self.heading_line_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
+        self.heading_line_label.color = config['heading_color']
+        self.heading_line_label.text = 'LN'
+        self.heading_line_label.x = 0
+
+        self.heading_car_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
+        self.heading_car_label.color = config['heading_color']
+        self.heading_car_label.text = 'CAR'
+        self.heading_car_label.x = 12
+
+        self.heading_dest_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
+        self.heading_dest_label.color = config['heading_color']
+        self.heading_dest_label.text = 'DEST'
+        self.heading_dest_label.x = 29
+
+        self.heading_min_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
+        self.heading_min_label.color = config['heading_color']
+        self.heading_min_label.text = 'MIN'
+        self.heading_min_label.x = 50
+
+        self.header_group = displayio.Group(max_size=4)
+        self.header_group.append(self.heading_line_label)
+        self.header_group.append(self.heading_car_label)
+        self.header_group.append(self.heading_dest_label)
+        self.header_group.append(self.heading_min_label)
+
+
         self.heading_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
         self.heading_label.color = config['heading_color']
         self.heading_label.text = config['heading_text']
-        self.parent_group.append(self.heading_label)
+        # self.parent_group.append(self.heading_label)
+
+        self.parent_group.append(self.header_group)
+
 
         self.trains = []
         for i in range(config['num_trains']):

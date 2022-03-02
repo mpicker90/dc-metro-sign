@@ -36,7 +36,7 @@ config = {
 	#########################
 	'metro_api_url': 'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/',
 	'metro_api_retries': 2,
-	'refresh_interval': 5, # 5 seconds is a good middle ground for updates, as the processor takes its sweet ol time
+	'refresh_interval': 5,
 
 	# Display Settings
 	'matrix_width': 64,
@@ -51,7 +51,7 @@ config = {
 	'loading_destination_text': 'Loading',
 	'loading_min_text': '---',
 	'loading_line_text': '--',
-	'loading_line_color': 0xFF00FF, # Something something Purple Line joke
+	'loading_line_color': 0xFF00FF,
 
 	'heading_text': 'LN CAR DEST    MIN',
 	'heading_color': 0xFF0000,
