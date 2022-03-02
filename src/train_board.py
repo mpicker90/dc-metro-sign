@@ -22,23 +22,8 @@ class TrainBoard:
         ]
     """
 
-    def __init__(self, get_new_data):
+    def __init__(self, get_new_data, display):
         self.get_new_data = get_new_data
-        # MATRIX = rgbmatrix.RGBMatrix(
-        #     width=128, height=32, bit_depth=6, tile=2, serpentine=True,
-        #     rgb_pins=[board.MTX_R1,
-        #               board.MTX_G1,
-        #               board.MTX_B1,
-        #               board.MTX_R2,
-        #               board.MTX_G2,
-        #               board.MTX_B2],
-        #     addr_pins=[board.MTX_ADDRA,
-        #                board.MTX_ADDRB,
-        #                board.MTX_ADDRC,
-        #                board.MTX_ADDRD],
-        #     clock_pin=board.MTX_CLK, latch_pin=board.MTX_LAT,
-        #     output_enable_pin=board.MTX_OE)
-        self.display = Matrix().display
 
         self.parent_group = displayio.Group(max_size=5)
 
@@ -81,7 +66,7 @@ class TrainBoard:
         for i in range(config['num_trains']):
             self.trains.append(Train(self.parent_group, i))
 
-        self.display.show(self.parent_group)
+        display.show(self.parent_group)
 
     def refresh(self) -> bool:
         print('Refreshing train information...')

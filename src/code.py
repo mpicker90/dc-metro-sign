@@ -1,6 +1,9 @@
 # DC Metro Board
 import time
+import displayio
 
+from adafruit_display_text.label import Label
+from adafruit_matrixportal.matrix import Matrix
 from config import config
 from train_board import TrainBoard
 from metro_api import MetroApi, MetroApiOnFireException
@@ -16,8 +19,18 @@ def refresh_trains() -> [dict]:
 		print('WMATA Api is currently on fire. Trying again later ...')
 		return None
 
-train_board = TrainBoard(refresh_trains, display)
+display = Matrix().display
+parent_group = displayio.Group(max_size=5)
+
+try:
+	train_board = TrainBoard(refresh_trains, display)
+except Exception as e:
+	print(e)
+
 
 while True:
-	train_board.refresh()
-	time.sleep(REFRESH_INTERVAL)
+	try:
+		train_board.refresh()
+		time.sleep(REFRESH_INTERVAL)
+	except Exception as e:
+		print(e)
