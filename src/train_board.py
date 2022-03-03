@@ -10,9 +10,12 @@ class TrainBoard:
 
         [
             {
+                'line': 'OR'
                 'line_color': 0xFFFFFF,
                 'destination': 'Dest Str',
                 'arrival': '5'
+                'car_length': '6',
+                'car_color': x0FFFFFF
             }
         ]
     """
@@ -22,26 +25,25 @@ class TrainBoard:
 
         self.parent_group = displayio.Group(max_size=5)
 
-        self.heading_line_label = Label(config['font'], max_glyphs=2, anchor_point=(0, 0))
+        self.heading_line_label = Label(config['font'], max_glyphs=len(config['line_header']), anchor_point=(0, 0))
         self.heading_line_label.color = config['red']
-        self.heading_line_label.text = 'LN'
+        self.heading_line_label.text = config['line_header']
         self.heading_line_label.x = 0
 
-        self.heading_car_label = Label(config['font'], max_glyphs=3, anchor_point=(0, 0))
+        self.heading_car_label = Label(config['font'], max_glyphs=len(config['car_header']), anchor_point=(0, 0))
         self.heading_car_label.color = config['red']
-        self.heading_car_label.text = 'CAR'
+        self.heading_car_label.text = config['car_header']
         self.heading_car_label.x = 14
 
-        self.heading_dest_label = Label(config['font'], max_glyphs=4, anchor_point=(0, 0))
+        self.heading_dest_label = Label(config['font'], max_glyphs=len(config['destination_header']), anchor_point=(0, 0))
         self.heading_dest_label.color = config['red']
-        self.heading_dest_label.text = 'DEST'
+        self.heading_dest_label.text = config['destination_header']
         self.heading_dest_label.x = 35
 
-        self.heading_min_label = Label(config['font'], max_glyphs=3, anchor_point=(0, 0))
+        self.heading_min_label = Label(config['font'], max_glyphs=len(config['min_header']), anchor_point=(0, 0))
         self.heading_min_label.color = config['red']
-        self.heading_min_label.text = 'MIN'
-        self.heading_min_label.x = config['matrix_width'] - (
-                    config['min_label_characters'] * config['character_width']) - 2
+        self.heading_min_label.text = config['min_header']
+        self.heading_min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
 
         self.header_group = displayio.Group(max_size=4)
         self.header_group.append(self.heading_line_label)

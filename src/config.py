@@ -32,6 +32,11 @@ config = {
 	'character_height': 7,
 	'text_padding': 1,
 
+	'line_header': 'LN',
+	'car_header': 'CAR',
+	'destination_header': 'DEST',
+	'min_header': 'MIN',
+
 	'loading_destination_text': 'Loading',
 	'loading_min_text': '---',
 	'loading_line_text': '--',
