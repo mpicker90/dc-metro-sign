@@ -39,7 +39,7 @@ config = {
 	'refresh_interval': 5,
 
 	# Display Settings
-	'matrix_width': 64,
+	'matrix_width': 6128,
 	'num_trains': 3,
 	'font': bitmap_font.load_font('lib/5x7.bdf'),
 
@@ -53,7 +53,7 @@ config = {
 	'loading_line_text': '--',
 	'loading_line_color': 0xFF00FF,
 
-	'heading_text': 'LN CAR DEST    MIN',
+	'heading_text': 'LN CAR   DEST          MIN',
 	'heading_color': 0xFF0000,
 
 	'train_line_height': 6,

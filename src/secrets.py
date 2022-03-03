@@ -7,5 +7,6 @@ from config import config
 # connect function? The world may never know :(
 secrets = {
 	'ssid': config['wifi_ssid'],
-	'password': config['wifi_password']
+	'password': config['wifi_password'],
+	'metro_api_key' : config['metro_api_key']
 }
