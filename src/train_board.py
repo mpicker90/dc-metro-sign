@@ -20,9 +20,9 @@ class TrainBoard:
         ]
     """
 
-    def __init__(self, get_new_data, display):
+    def __init__(self, get_new_data):
         self.get_new_data = get_new_data
-
+        self.display = display_creator.create_display()
         self.parent_group = displayio.Group(max_size=5)
 
         self.heading_line_label = Label(config['font'], max_glyphs=len(config['line_header']), anchor_point=(0, 0))
@@ -57,7 +57,7 @@ class TrainBoard:
         for i in range(config['num_trains']):
             self.trains.append(Train(self.parent_group, i))
 
-        display.show(self.parent_group)
+        self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
         print('Refreshing train information...')

@@ -20,7 +20,7 @@ def refresh_trains() -> [dict]:
         return None
 
 try:
-    train_board = TrainBoard(refresh_trains, display)
+    train_board = TrainBoard(refresh_trains)
 except Exception as e:
     print(e)
 
