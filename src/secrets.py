@@ -6,7 +6,7 @@ from config import config
 # Why isn't aren't the SSID and password just parameters for the
 # connect function? The world may never know :(
 secrets = {
-	'ssid': config['wifi_ssid'],
-	'password': config['wifi_password'],
-	'metro_api_key' : config['metro_api_key']
+	'ssid': '2Gh wifi name here',
+	'password': 'wifi password here',
+	'metro_api_key': 'api key here'
 }
