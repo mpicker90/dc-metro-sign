@@ -2,18 +2,6 @@ from adafruit_bitmap_font import bitmap_font
 
 config = {
 	#########################
-	# Network Configuration #
-	#########################
-
-	# WIFI Network SSID
-	# TODO UPDATE ME
-	'wifi_ssid': 'TP-Link_6B00',
-
-	# WIFI Password
-	# TODO UPDATE ME
-	'wifi_password': '87427783',
-
-	#########################
 	# Metro Configuration   #
 	#########################
 
@@ -26,9 +14,6 @@ config = {
 	# TODO UPDATE ME
 	'train_group': '2',
 
-	# API Key for WMATA
-	# TODO UPDATE ME
-	'metro_api_key': '79a96eab26874765a170006dcf33bd04',
 	#########################
 	# Other Values You      #
 	# Probably Shouldn't    #
@@ -39,7 +24,7 @@ config = {
 	'refresh_interval': 5,
 
 	# Display Settings
-	'matrix_width': 6128,
+	'matrix_width': 128,
 	'num_trains': 3,
 	'font': bitmap_font.load_font('lib/5x7.bdf'),
 
@@ -61,5 +46,5 @@ config = {
 
 	'car_length_max_characters': 3,
 	'min_label_characters': 3,
-	'destination_max_characters': 6,
+	'destination_max_characters': 12,
 }

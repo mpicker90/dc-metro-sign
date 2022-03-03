@@ -18,7 +18,7 @@ class MetroApi:
         try:
             api_url = config['metro_api_url'] + station_code
             train_data = _network.fetch(api_url, headers={
-                'api_key': config['metro_api_key']
+                'api_key': secrets['metro_api_key']
             }).json()
 
             print('Received response from WMATA api...')
