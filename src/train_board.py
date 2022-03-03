@@ -1,11 +1,6 @@
 import displayio
-import board
-import rgbmatrix
-import framebufferio
-
+import display_creator
 from adafruit_display_text.label import Label
-from adafruit_matrixportal.matrix import Matrix
-
 from config import config
 
 
@@ -45,7 +40,8 @@ class TrainBoard:
         self.heading_min_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
         self.heading_min_label.color = config['heading_color']
         self.heading_min_label.text = 'MIN'
-        self.heading_min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
+        self.heading_min_label.x = config['matrix_width'] - (
+                    config['min_label_characters'] * config['character_width']) - 2
 
         self.header_group = displayio.Group(max_size=4)
         self.header_group.append(self.heading_line_label)
@@ -53,14 +49,12 @@ class TrainBoard:
         self.header_group.append(self.heading_dest_label)
         self.header_group.append(self.heading_min_label)
 
-
         self.heading_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
         self.heading_label.color = config['heading_color']
         self.heading_label.text = config['heading_text']
         # self.parent_group.append(self.heading_label)
 
         self.parent_group.append(self.header_group)
-
 
         self.trains = []
         for i in range(config['num_trains']):
@@ -76,7 +70,8 @@ class TrainBoard:
             for i in range(config['num_trains']):
                 if i < len(train_data):
                     train = train_data[i]
-                    self._update_train(i, train['line'], train['line_color'], train['car_length'], train['car_color'], train['destination'], train['arrival'])
+                    self._update_train(i, train['line'], train['line_color'], train['car_length'], train['car_color'],
+                                       train['destination'], train['arrival'])
                 else:
                     self._hide_train(i)
 
@@ -90,7 +85,8 @@ class TrainBoard:
     def _hide_train(self, index: int):
         self.trains[index].hide()
 
-    def _update_train(self, index: int, line: str, line_color: int, car_length: str, car_color: int, destination: str, minutes: str):
+    def _update_train(self, index: int, line: str, line_color: int, car_length: str, car_color: int, destination: str,
+                      minutes: str):
         self.trains[index].update(line, line_color, car_length, car_color, destination, minutes)
 
 
@@ -98,19 +94,20 @@ class Train:
     def __init__(self, parent_group, index):
         y = (int)(config['character_height'] + config['text_padding']) * (index + 1)
 
-        self.line_label = Label(config['font'], max_glyphs=config['destination_max_characters'],  anchor_point=(0, 0))
+        self.line_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
         self.line_label.x = 0
         self.line_label.y = y
         self.line_label.color = config['text_color']
         self.line_label.text = config['loading_line_text'][:config['train_line_width']]
 
-        self.car_label = Label(config['font'], max_glyphs=config['destination_max_characters'],  anchor_point=(0, 0))
+        self.car_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
         self.car_label.x = 15
         self.car_label.y = y
         self.car_label.color = config['text_color']
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
-        self.destination_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
+        self.destination_label = Label(config['font'], max_glyphs=config['destination_max_characters'],
+                                       anchor_point=(0, 0))
         self.destination_label.x = 30
         self.destination_label.y = y
         self.destination_label.color = config['text_color']
