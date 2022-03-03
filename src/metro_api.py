@@ -56,20 +56,20 @@ class MetroApi:
     
     def _get_line_color(line: str) -> int:
         if line == 'RD':
-            return 0xFF0000
+            return config['red']
         elif line == 'OR':
-            return 0xFF5500
+            return config['orange']
         elif line == 'YL':
-            return 0xFFFF00
+            return config['yellow']
         elif line == 'GR':
-            return 0x00FF00
+            return config['green']
         elif line == 'BL':
-            return 0x0000FF
+            return config['blue']
         else:
-            return 0xAAAAAA
+            return config['silver']
 
     def _get_car_color(car: str) -> int:
-        if car == 6:
-            return 0xFFFF00
+        if car == '6':
+            return config['orange']
         else:
-            return 0x00FF00
+            return config['green']

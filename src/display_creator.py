@@ -7,7 +7,7 @@ from adafruit_matrixportal.matrix import Matrix
 
 def create_display():
     try:
-        bit_depth = 1
+        bit_depth = 4
         base_width = 64
         base_height = 32
         chain_across = 2

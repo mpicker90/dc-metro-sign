@@ -31,15 +31,10 @@ config = {
 	'character_width': 4,
 	'character_height': 7,
 	'text_padding': 1,
-	'text_color': 0xFF7500,
 
 	'loading_destination_text': 'Loading',
 	'loading_min_text': '---',
 	'loading_line_text': '--',
-	'loading_line_color': 0xFF00FF,
-
-	'heading_text': 'LN CAR   DEST          MIN',
-	'heading_color': 0xFF0000,
 
 	'train_line_height': 6,
 	'train_line_width': 2,
@@ -47,4 +42,12 @@ config = {
 	'car_length_max_characters': 3,
 	'min_label_characters': 3,
 	'destination_max_characters': 12,
+
+	'red': 0xFF0000,
+	'orange': 0xFF5500,
+	'yellow': 0xFFFF00,
+	'green': 0x00FF00,
+	'blue': 0x0000FF,
+	'silver': 0xAAAAAA
+
 }

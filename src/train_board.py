@@ -22,23 +22,23 @@ class TrainBoard:
 
         self.parent_group = displayio.Group(max_size=5)
 
-        self.heading_line_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
-        self.heading_line_label.color = config['heading_color']
+        self.heading_line_label = Label(config['font'], max_glyphs=2, anchor_point=(0, 0))
+        self.heading_line_label.color = config['red']
         self.heading_line_label.text = 'LN'
         self.heading_line_label.x = 0
 
-        self.heading_car_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
-        self.heading_car_label.color = config['heading_color']
+        self.heading_car_label = Label(config['font'], max_glyphs=3, anchor_point=(0, 0))
+        self.heading_car_label.color = config['red']
         self.heading_car_label.text = 'CAR'
         self.heading_car_label.x = 14
 
-        self.heading_dest_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
-        self.heading_dest_label.color = config['heading_color']
+        self.heading_dest_label = Label(config['font'], max_glyphs=4, anchor_point=(0, 0))
+        self.heading_dest_label.color = config['red']
         self.heading_dest_label.text = 'DEST'
         self.heading_dest_label.x = 35
 
-        self.heading_min_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
-        self.heading_min_label.color = config['heading_color']
+        self.heading_min_label = Label(config['font'], max_glyphs=3, anchor_point=(0, 0))
+        self.heading_min_label.color = config['red']
         self.heading_min_label.text = 'MIN'
         self.heading_min_label.x = config['matrix_width'] - (
                     config['min_label_characters'] * config['character_width']) - 2
@@ -48,11 +48,6 @@ class TrainBoard:
         self.header_group.append(self.heading_car_label)
         self.header_group.append(self.heading_dest_label)
         self.header_group.append(self.heading_min_label)
-
-        self.heading_label = Label(config['font'], max_glyphs=len(config['heading_text']), anchor_point=(0, 0))
-        self.heading_label.color = config['heading_color']
-        self.heading_label.text = config['heading_text']
-        # self.parent_group.append(self.heading_label)
 
         self.parent_group.append(self.header_group)
 
@@ -97,26 +92,26 @@ class Train:
         self.line_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
         self.line_label.x = 0
         self.line_label.y = y
-        self.line_label.color = config['text_color']
+        self.line_label.color = config['orange']
         self.line_label.text = config['loading_line_text'][:config['train_line_width']]
 
         self.car_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
         self.car_label.x = 15
         self.car_label.y = y
-        self.car_label.color = config['text_color']
+        self.car_label.color = config['orange']
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
         self.destination_label = Label(config['font'], max_glyphs=config['destination_max_characters'],
                                        anchor_point=(0, 0))
         self.destination_label.x = 30
         self.destination_label.y = y
-        self.destination_label.color = config['text_color']
+        self.destination_label.color = config['orange']
         self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]
 
         self.min_label = Label(config['font'], max_glyphs=config['min_label_characters'], anchor_point=(0, 0))
         self.min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
         self.min_label.y = y
-        self.min_label.color = config['text_color']
+        self.min_label.color = config['orange']
         self.min_label.text = config['loading_min_text']
 
         self.group = displayio.Group(max_size=4)
