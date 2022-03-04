@@ -19,7 +19,7 @@ def change_station(index, station_list, button):
 
         station_label = Label(config['font'], max_glyphs=len(config['line_header']), anchor_point=(0.5, 0.5))
         station_label.color = config['red']
-        station_label.text = station_list[index][0] + ' ' + station_list[index][1]
+        station_label.text = config['station_map'][station_list[index][0]] + ' ' + station_list[index][1]
         station_label.x = 0
 
         parent_group.append(station_label)

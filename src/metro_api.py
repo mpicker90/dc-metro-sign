@@ -38,7 +38,7 @@ class MetroApi:
     
     def _normalize_train_response(train: dict) -> dict:
         line = train['Line']
-        destination = train['Destination']
+        destination = train['DestinationName']
         arrival = train['Min']
         car = train['Car']
 
