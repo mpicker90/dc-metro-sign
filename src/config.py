@@ -4,15 +4,7 @@ config = {
 	#########################
 	# Metro Configuration   #
 	#########################
-
-	# Metro Station Code
-	# TODO UPDATE ME
-
-	'metro_station_code': 'C02',
-
-	# Metro Train Group
-	# TODO UPDATE ME
-	'train_group': '2',
+	'station_list': [['C02', '1'], ['C02', '2'], ['E01', '1'], ['E01', '2'], ['A02', '1'], ['A02', '2']],
 
 	#########################
 	# Other Values You      #
@@ -46,7 +38,7 @@ config = {
 
 	'car_length_max_characters': 3,
 	'min_label_characters': 3,
-	'destination_max_characters': 12,
+	'destination_max_characters': 18,
 
 	'red': 0xFF0000,
 	'orange': 0xFF5500,

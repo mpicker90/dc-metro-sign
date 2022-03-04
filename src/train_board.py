@@ -61,6 +61,7 @@ class TrainBoard:
 
     def refresh(self) -> bool:
         print('Refreshing train information...')
+        self.display.show(self.parent_group)
         train_data = self.get_new_data()
         if train_data is not None:
             print('Reply received.')
