@@ -38,7 +38,7 @@ config = {
 
     'car_length_max_characters': 3,
     'min_label_characters': 3,
-    'destination_max_characters': 18,
+    'destination_max_characters': 16,
 
     'red': 0xFF0000,
     'orange': 0xFF5500,

@@ -1,6 +1,5 @@
 import time
 import board
-import digitalio
 import displayio
 import display_creator
 from config import config

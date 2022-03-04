@@ -6,5 +6,6 @@ from config import config
 secrets = {
 	'ssid': '2Gh wifi name here',
 	'password': 'wifi password here',
-	'metro_api_key': 'api key here'
+	'metro_api_key': 'api key here',
+	'openweather_token': 'open weather key here'
 }
