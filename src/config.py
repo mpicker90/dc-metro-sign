@@ -22,9 +22,9 @@ config = {
     # Display Settings
     'matrix_width': 128,
     'num_trains': 3,
-    'font': bitmap_font.load_font('lib/5x7.bdf'),
+    'font': bitmap_font.load_font('lib/6x10.bdf'),
 
-    'character_width': 4,
+    'character_width': 5,
     'character_height': 7,
     'text_padding': 1,
     'base_offset': 3,

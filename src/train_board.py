@@ -34,13 +34,13 @@ class TrainBoard:
         self.heading_car_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_car_label.color = config['red']
         self.heading_car_label.text = config['car_header']
-        self.heading_car_label.x = 14
+        self.heading_car_label.x = 18
         self.heading_car_label.y = config['base_offset']
 
         self.heading_dest_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_dest_label.color = config['red']
         self.heading_dest_label.text = config['destination_header']
-        self.heading_dest_label.x = 35
+        self.heading_dest_label.x = 49
         self.heading_dest_label.y = config['base_offset']
 
         self.heading_min_label = Label(config['font'], anchor_point=(0, 0))
@@ -104,13 +104,13 @@ class Train:
         self.line_label.text = config['loading_line_text'][:config['train_line_width']]
 
         self.car_label = Label(config['font'], anchor_point=(0, 0))
-        self.car_label.x = 15
+        self.car_label.x = 20
         self.car_label.y = y
         self.car_label.color = config['orange']
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
         self.destination_label = Label(config['font'], anchor_point=(0, 0))
-        self.destination_label.x = 30
+        self.destination_label.x = 41
         self.destination_label.y = y
         self.destination_label.color = config['orange']
         self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]

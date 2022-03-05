@@ -29,10 +29,10 @@ class MetroApi:
                 return MetroApi._fetch_train_predictions(station_code, group, network, retry_attempt + 1)
             else:
                 raise MetroApiOnFireException()
-    
+
     def _normalize_train_response(train: dict) -> dict:
         line = train['Line']
-        destination = train['DestinationName']
+        destination = train['Destination']
         arrival = train['Min']
         car = train['Car']
 
@@ -47,7 +47,7 @@ class MetroApi:
             'car_length': car,
             'car_color': MetroApi._get_car_color(car)
         }
-    
+
     def _get_line_color(line: str) -> int:
         if line == 'RD':
             return config['red']
