@@ -29,21 +29,25 @@ class TrainBoard:
         self.heading_line_label.color = config['red']
         self.heading_line_label.text = config['line_header']
         self.heading_line_label.x = 0
+        self.heading_line_label.y = config['base_offset']
 
         self.heading_car_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_car_label.color = config['red']
         self.heading_car_label.text = config['car_header']
         self.heading_car_label.x = 14
+        self.heading_car_label.y = config['base_offset']
 
         self.heading_dest_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_dest_label.color = config['red']
         self.heading_dest_label.text = config['destination_header']
         self.heading_dest_label.x = 35
+        self.heading_dest_label.y = config['base_offset']
 
         self.heading_min_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_min_label.color = config['red']
         self.heading_min_label.text = config['min_header']
         self.heading_min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
+        self.heading_min_label.y = config['base_offset']
 
         self.header_group = displayio.Group()
         self.header_group.append(self.heading_line_label)
@@ -91,7 +95,7 @@ class TrainBoard:
 
 class Train:
     def __init__(self, parent_group, index):
-        y = (int)(config['character_height'] + config['text_padding']) * (index + 1)
+        y = (int)(config['character_height'] + config['text_padding']) * (index + 1) + config['base_offset']
 
         self.line_label = Label(config['font'], anchor_point=(0, 0))
         self.line_label.x = 0

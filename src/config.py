@@ -27,6 +27,7 @@ config = {
     'character_width': 4,
     'character_height': 7,
     'text_padding': 1,
+    'base_offset': 3,
 
     'line_header': 'LN',
     'car_header': 'CAR',

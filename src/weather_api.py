@@ -12,7 +12,7 @@ class WeatherApiOnFireException(Exception):
 
 class WeatherApi:
     def fetch_weather_predictions(network) -> [dict]:
-        return WeatherApi._fetch_current_weather(network=network, retry_attempt=0)
+        return WeatherApi._fetch_weather_predictions(network=network, retry_attempt=0)
 
     def _fetch_weather_predictions(network, retry_attempt: int) -> [dict]:
         try:
