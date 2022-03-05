@@ -1,6 +1,3 @@
-import board
-from adafruit_matrixportal.network import Network
-
 from config import config
 from secrets import secrets
 
@@ -35,7 +32,7 @@ class MetroApi:
     
     def _normalize_train_response(train: dict) -> dict:
         line = train['Line']
-        destination = train['Destination']
+        destination = train['DestinationName']
         arrival = train['Min']
         car = train['Car']
 

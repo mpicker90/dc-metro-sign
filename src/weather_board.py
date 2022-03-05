@@ -4,6 +4,7 @@ from adafruit_display_text.label import Label
 from config import config
 import gc
 
+
 class WeatherBoard:
     """
         get_new_data is a function that is expected to return a dictionarie like this:
@@ -20,40 +21,46 @@ class WeatherBoard:
     def __init__(self, get_new_data):
         self.get_new_data = get_new_data
         self.display = display_creator.create_display()
-        self.parent_group = displayio.Group(scale = 1, x = 0, y = 0)
+        self.parent_group = displayio.Group(scale=1, x=0, y=0)
         self.weather = Weather(self.parent_group)
         self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
         print('Refreshing weather information...')
         weather_data = self.get_new_data()
-        print(gc.mem_free())
         if weather_data is not None:
             print('Reply received.')
-            self._update_weather(weather_data['temp'], 0, weather_data['description'], weather_data['time'])
+            self._update_weather(weather_data['temp'], weather_data['chance_of_rain'], weather_data['description'],
+                                 weather_data['time'], weather_data['date'])
             print('Successfully updated.')
         else:
             print('No data received. Clearing display.')
 
         self.display.show(self.parent_group)
 
-    def _update_weather(self, temp: int, rain: int, description: str, time: int):
-        self.weather.update(temp, 0, description, time)
+    def _update_weather(self, temp: int, rain: int, description: str, time: str, dt: str):
+        self.weather.update(temp, rain, description, time, dt)
 
 
 class Weather:
     def __init__(self, parent_group):
         self.time_label = Label(config['font'], anchor_point=(0, 0))
-        self.time_label.x = 10
-        self.time_label.y = 12 + config['base_offset']
+        self.time_label.x = 2
+        self.time_label.y = config['base_offset'] + 2
         self.time_label.color = config['orange']
         self.time_label.text = '00:00PM'
+
+        self.date_label = Label(config['font'], anchor_point=(0, 0))
+        self.date_label.x = 2
+        self.date_label.y = config['base_offset'] + 14
+        self.date_label.color = config['orange']
+        self.date_label.text = 'Jan 01, 0000'
 
         self.temp_label = Label(config['font'], anchor_point=(0, 0))
         self.temp_label.x = 65
         self.temp_label.y = 2 + config['base_offset']
         self.temp_label.color = config['orange']
-        self.temp_label.text = config['loading_line_text'][:config['train_line_width']]
+        self.temp_label.text = '00°F'
 
         self.rain_label = Label(config['font'], anchor_point=(0, 0))
         self.rain_label.x = 92
@@ -79,6 +86,7 @@ class Weather:
         self.group.append(self.temp_label)
         self.group.append(self.location_label)
         self.group.append(self.description_label)
+        self.group.append(self.date_label)
 
         parent_group.append(self.group)
 
@@ -102,15 +110,18 @@ class Weather:
         self.description_label.text = description
 
     def set_time(self, time: str):
-        self.time_label.text = str(time)
+        self.time_label.text = time
 
-    def update(self, temp: int, rain: int, description: str, time: int):
+    def set_date(self, date: str):
+        self.date_label.text = date
+
+    def update(self, temp: int, rain: int, description: str, time: str, date: str):
         self.show()
         self.set_temp(temp)
         self.set_rain(rain)
         self.set_description(description)
         self.set_time(time)
-
+        self.set_date(date)
 
     def scroll(self, line):
         line.x = line.x - 1

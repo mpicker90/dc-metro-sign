@@ -65,15 +65,18 @@ except Exception as e:
 while True:
     if not button_up.value:
         change_station()
-
-    try:
-        weather_board.refresh()
+    time_board_time = time.time()
+    while time.time() - time_board_time <= 120:
+        try:
+            weather_board.refresh()
+            time.sleep(REFRESH_INTERVAL)
+        except Exception as e:
+            print(e)
+        time.sleep(20)
+    train_board_time = time.time()
+    while time.time() - train_board_time <= 300:
+        try:
+            train_board.refresh()
+        except Exception as e:
+            print(e)
         time.sleep(REFRESH_INTERVAL)
-    except Exception as e:
-        print(e)
-
-    try:
-        train_board.refresh()
-        time.sleep(REFRESH_INTERVAL)
-    except Exception as e:
-        print(e)

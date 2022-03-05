@@ -1,6 +1,4 @@
-import board
 import time
-from adafruit_matrixportal.network import Network
 
 from config import config
 from secrets import secrets
@@ -70,6 +68,8 @@ class WeatherApi:
     def _get_time(epoch_time: int) -> str:
         time_tup = time.localtime(epoch_time)
         str_min = str(time_tup.tm_min)
+        if len(str_min) == 1:
+            str_min = '0' + str_min
         hour = time_tup.tm_hour - 5
         if time_tup.tm_isdst == 1:
             hour += 1
