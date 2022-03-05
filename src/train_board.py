@@ -23,29 +23,29 @@ class TrainBoard:
     def __init__(self, get_new_data):
         self.get_new_data = get_new_data
         self.display = display_creator.create_display()
-        self.parent_group = displayio.Group(max_size=5)
+        self.parent_group = displayio.Group()
 
-        self.heading_line_label = Label(config['font'], max_glyphs=len(config['line_header']), anchor_point=(0, 0))
+        self.heading_line_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_line_label.color = config['red']
         self.heading_line_label.text = config['line_header']
         self.heading_line_label.x = 0
 
-        self.heading_car_label = Label(config['font'], max_glyphs=len(config['car_header']), anchor_point=(0, 0))
+        self.heading_car_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_car_label.color = config['red']
         self.heading_car_label.text = config['car_header']
         self.heading_car_label.x = 14
 
-        self.heading_dest_label = Label(config['font'], max_glyphs=len(config['destination_header']), anchor_point=(0, 0))
+        self.heading_dest_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_dest_label.color = config['red']
         self.heading_dest_label.text = config['destination_header']
         self.heading_dest_label.x = 35
 
-        self.heading_min_label = Label(config['font'], max_glyphs=len(config['min_header']), anchor_point=(0, 0))
+        self.heading_min_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_min_label.color = config['red']
         self.heading_min_label.text = config['min_header']
         self.heading_min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
 
-        self.header_group = displayio.Group(max_size=4)
+        self.header_group = displayio.Group()
         self.header_group.append(self.heading_line_label)
         self.header_group.append(self.heading_car_label)
         self.header_group.append(self.heading_dest_label)
@@ -61,7 +61,6 @@ class TrainBoard:
 
     def refresh(self) -> bool:
         print('Refreshing train information...')
-        self.display.show(self.parent_group)
         train_data = self.get_new_data()
         if train_data is not None:
             print('Reply received.')
@@ -80,6 +79,8 @@ class TrainBoard:
             for i in range(config['num_trains']):
                 self._hide_train(i)
 
+        self.display.show(self.parent_group)
+
     def _hide_train(self, index: int):
         self.trains[index].hide()
 
@@ -92,32 +93,31 @@ class Train:
     def __init__(self, parent_group, index):
         y = (int)(config['character_height'] + config['text_padding']) * (index + 1)
 
-        self.line_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
+        self.line_label = Label(config['font'], anchor_point=(0, 0))
         self.line_label.x = 0
         self.line_label.y = y
         self.line_label.color = config['orange']
         self.line_label.text = config['loading_line_text'][:config['train_line_width']]
 
-        self.car_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
+        self.car_label = Label(config['font'], anchor_point=(0, 0))
         self.car_label.x = 15
         self.car_label.y = y
         self.car_label.color = config['orange']
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
-        self.destination_label = Label(config['font'], max_glyphs=config['destination_max_characters'],
-                                       anchor_point=(0, 0))
+        self.destination_label = Label(config['font'], anchor_point=(0, 0))
         self.destination_label.x = 30
         self.destination_label.y = y
         self.destination_label.color = config['orange']
         self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]
 
-        self.min_label = Label(config['font'], max_glyphs=config['min_label_characters'], anchor_point=(0, 0))
+        self.min_label = Label(config['font'], anchor_point=(0, 0))
         self.min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
         self.min_label.y = y
         self.min_label.color = config['orange']
         self.min_label.text = config['loading_min_text']
 
-        self.group = displayio.Group(max_size=4)
+        self.group = displayio.Group()
         self.group.append(self.line_label)
         self.group.append(self.car_label)
         self.group.append(self.destination_label)

@@ -4,20 +4,17 @@ from adafruit_matrixportal.network import Network
 from config import config
 from secrets import secrets
 
-# Keeping a global reference for this
-_network = Network(status_neopixel=board.NEOPIXEL)
-
 class MetroApiOnFireException(Exception):
     pass
 
 class MetroApi:
-    def fetch_train_predictions(station_code: str, group: str) -> [dict]:
-        return MetroApi._fetch_train_predictions(station_code, group, retry_attempt=0)
+    def fetch_train_predictions(station_code: str, group: str, network) -> [dict]:
+        return MetroApi._fetch_train_predictions(station_code, group, network, retry_attempt=0)
 
-    def _fetch_train_predictions(station_code: str, group: str, retry_attempt: int) -> [dict]:
+    def _fetch_train_predictions(station_code: str, group: str, network, retry_attempt: int) -> [dict]:
         try:
             api_url = config['metro_api_url'] + station_code
-            train_data = _network.fetch(api_url, headers={
+            train_data = network.fetch(api_url, headers={
                 'api_key': secrets['metro_api_key']
             }).json()
 
@@ -32,7 +29,7 @@ class MetroApi:
             if retry_attempt < config['metro_api_retries']:
                 print('Failed to connect to WMATA API. Reattempting...')
                 # Recursion for retry logic because I don't care about your stack
-                return MetroApi._fetch_train_predictions(station_code, group, retry_attempt + 1)
+                return MetroApi._fetch_train_predictions(station_code, group, network, retry_attempt + 1)
             else:
                 raise MetroApiOnFireException()
     

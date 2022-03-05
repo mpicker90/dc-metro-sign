@@ -2,7 +2,7 @@ import displayio
 import display_creator
 from adafruit_display_text.label import Label
 from config import config
-
+import gc
 
 class WeatherBoard:
     """
@@ -12,96 +12,78 @@ class WeatherBoard:
                 'main': rain,
                 'description': 'thunder storms',
                 'icon': 'd05'
+                'location': 'Washington DC
+                'timestamp': 12321312312
             }
     """
 
     def __init__(self, get_new_data):
         self.get_new_data = get_new_data
         self.display = display_creator.create_display()
-        self.parent_group = displayio.Group(max_size=5)
-
-        self.heading_line_label = Label(config['font'], max_glyphs=10, anchor_point=(0, 0))
-        self.heading_line_label.color = config['red']
-        self.heading_line_label.text = config['temp']
-        self.heading_line_label.x = 0
-
-        self.heading_car_label = Label(config['font'], max_glyphs=10, anchor_point=(0, 0))
-        self.heading_car_label.color = config['red']
-        self.heading_car_label.text = config['main']
-        self.heading_car_label.x = 14
-
-        self.heading_dest_label = Label(config['font'], max_glyphs=10, anchor_point=(0, 0))
-        self.heading_dest_label.color = config['red']
-        self.heading_dest_label.text = config['description']
-        self.heading_dest_label.x = 35
-
-        self.heading_min_label = Label(config['font'], max_glyphs=10, anchor_point=(0, 0))
-        self.heading_min_label.color = config['red']
-        self.heading_min_label.text = config['icon']
-        self.heading_min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
-
-        self.header_group = displayio.Group(max_size=4)
-        self.header_group.append(self.heading_line_label)
-        self.header_group.append(self.heading_car_label)
-        self.header_group.append(self.heading_dest_label)
-        self.header_group.append(self.heading_min_label)
-
-        self.parent_group.append(self.header_group)
-
-        self.weather.append(Weather(self.parent_group))
-        self.parent_group.append(self.weather)
-
+	print('display created')
+        self.parent_group = displayio.Group(scale = 1, x = 0, y = 0)
+	print('parent group created')
+        self.weather = Weather(self.parent_group)
+	print('new weather')
         self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
-        print('Refreshing train information...')
-        self.display.show(self.parent_group)
+        print('Refreshing weather information...')
         weather_data = self.get_new_data()
+        print(gc.mem_free())
         if weather_data is not None:
             print('Reply received.')
-            self._update_weather(weather_data['temp'], weather_data['main'], weather_data['description'], weather_data['icon'])
+            self._update_weather(weather_data['temp'], 0, weather_data['description'], weather_data['time'])
             print('Successfully updated.')
         else:
             print('No data received. Clearing display.')
 
-    def _update_weather(self, temp: int, main: str, description: int, icon: str):
-        self.weather_data.update(temp, main, description, icon)
+        self.display.show(self.parent_group)
+
+    def _update_weather(self, temp: int, rain: int, description: str, time: int):
+        self.weather.update(temp, 0, description, time)
 
 
 class Weather:
     def __init__(self, parent_group):
-        y = (int)(config['character_height'] + config['text_padding']) * (index + 1)
+	print('sup')
+        y = (int)(config['character_height'] + config['text_padding']) * 1
 
-        self.line_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
-        self.line_label.x = 0
-        self.line_label.y = y
-        self.line_label.color = config['orange']
-        self.line_label.text = config['loading_line_text'][:config['train_line_width']]
+        self.time_label = Label(config['font'], anchor_point=(0, 0))
+        self.time_label.x = 10
+        self.time_label.y = 5
+        self.time_label.color = config['orange']
+        self.time_label.text = '00:00 PM'
 
-        self.car_label = Label(config['font'], max_glyphs=config['destination_max_characters'], anchor_point=(0, 0))
-        self.car_label.x = 15
-        self.car_label.y = y
-        self.car_label.color = config['orange']
-        self.car_label.text = config['loading_min_text'][:config['train_line_width']]
+        self.temp_label = Label(config['font'], anchor_point=(0, 0))
+        self.temp_label.x = 66
+        self.temp_label.y = 2
+        self.temp_label.color = config['orange']
+        self.temp_label.text = config['loading_line_text'][:config['train_line_width']]
 
-        self.destination_label = Label(config['font'], max_glyphs=config['destination_max_characters'],
-                                       anchor_point=(0, 0))
-        self.destination_label.x = 30
-        self.destination_label.y = y
-        self.destination_label.color = config['orange']
-        self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]
+        self.rain_label = Label(config['font'], anchor_point=(0, 0))
+        self.rain_label.x = 80
+        self.rain_label.y = 2
+        self.rain_label.color = config['orange']
+        self.rain_label.text = '0% Rain'
 
-        self.min_label = Label(config['font'], max_glyphs=config['min_label_characters'], anchor_point=(0, 0))
-        self.min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
-        self.min_label.y = y
-        self.min_label.color = config['orange']
-        self.min_label.text = config['loading_min_text']
+        self.location_label = Label(config['font'], anchor_point=(0, 0))
+        self.location_label.x = 66
+        self.location_label.y = 23
+        self.location_label.color = config['orange']
+        self.location_label.text = config['weather_location']
 
-        self.group = displayio.Group(max_size=4)
-        self.group.append(self.line_label)
-        self.group.append(self.car_label)
-        self.group.append(self.destination_label)
-        self.group.append(self.min_label)
+        self.description_label = Label(config['font'], anchor_point=(0, 0))
+        self.description_label.x = 66
+        self.description_label.y = 13
+        self.description_label.color = config['orange']
+        self.description_label.text = config['loading_destination_text'][:config['destination_max_characters']]
+
+        self.group = displayio.Group()
+        self.group.append(self.time_label)
+        self.group.append(self.temp_label)
+        self.group.append(self.location_label)
+        self.group.append(self.description_label)
 
         parent_group.append(self.group)
 
@@ -111,30 +93,32 @@ class Weather:
     def hide(self):
         self.group.hidden = True
 
-    def set_line(self, line: str, line_color: int):
-        self.line_label.color = line_color
-        self.line_label.text = line[:config['train_line_width']]
-
-    def set_car(self, car_length: str, car_color: int):
-        self.car_label.color = car_color
-        self.car_label.text = car_length[:config['car_length_max_characters']]
-
-    def set_destination(self, destination: str):
-        self.destination_label.text = destination[:config['destination_max_characters']]
-
-    def set_arrival_time(self, minutes: str):
+    def set_temp(self, temp: int):
         # Ensuring we have a string
-        minutes = str(minutes)
-        minutes_len = len(minutes)
+        temp_str = str(temp)
 
-        # Left-padding the minutes label
-        minutes = ' ' * (config['min_label_characters'] - minutes_len) + minutes
+        self.temp_label.color = config['orange']
+        self.temp_label.text = temp_str.split('.')[0] + '°F'
 
-        self.min_label.text = minutes
+    def set_rain(self, rain: str):
+        self.location_label.text = str(rain) + '% Rain'
 
-    def update(self, line: str, line_color: int, car_length: str, car_color: int, destination: str, minutes: str):
+    def set_description(self, description: str):
+        self.description_label.text = description
+
+    def set_time(self, time: str):
+        self.time_label.text = str(time)
+
+    def update(self, temp: int, rain: int, description: str, time: int):
         self.show()
-        self.set_line(line, line_color)
-        self.set_car(car_length, car_color)
-        self.set_destination(destination)
-        self.set_arrival_time(minutes)
+        self.set_temp(temp)
+        self.set_rain(rain)
+        self.set_description(description)
+        self.set_time(time)
+
+
+    def scroll(self, line):
+        line.x = line.x - 1
+        line_width = line.bounding_box[2]
+        if line.x < -line_width:
+            line.x = self.display.width

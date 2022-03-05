@@ -3,12 +3,16 @@ import time
 import board
 import digitalio
 import station_changer
+import display_creator
+from adafruit_matrixportal.network import Network
 
 from config import config
 from train_board import TrainBoard
 from weather_board import WeatherBoard
 from metro_api import MetroApi, MetroApiOnFireException
 from weather_api import WeatherApi, WeatherApiOnFireException
+
+network = Network(status_neopixel=board.NEOPIXEL)
 
 STATION_LIST = config['station_list']
 STATION_LIST_INDEX = 0
@@ -28,7 +32,7 @@ def refresh_trains() -> [dict]:
     global STATION_LIST_INDEX
     try:
         return MetroApi.fetch_train_predictions(STATION_LIST[STATION_LIST_INDEX][0],
-                                                STATION_LIST[STATION_LIST_INDEX][1])
+                                                STATION_LIST[STATION_LIST_INDEX][1], network)
     except MetroApiOnFireException:
         print('WMATA Api is currently on fire. Trying again later ...')
         return None
@@ -43,9 +47,9 @@ def change_station():
 
 def refresh_weather() -> [dict]:
     try:
-        return WeatherApi.fetch_weather_predictions()
+        return WeatherApi.fetch_current_weather(network)
     except WeatherApiOnFireException:
-        print('WMATA Api is currently on fire. Trying again later ...')
+        print('Weather Api is currently on fire. Trying again later ...')
         return None
 
 try:
@@ -62,12 +66,12 @@ while True:
     if not button_up.value:
         change_station()
 
-    if not button_down.value:
-        try:
-            weather_board.refresh()
-            time.sleep(REFRESH_INTERVAL)
-        except Exception as e:
-            print(e)
+    try:
+        weather_board.refresh()
+        time.sleep(REFRESH_INTERVAL)
+    except Exception as e:
+        print(e)
+
     try:
         train_board.refresh()
         time.sleep(REFRESH_INTERVAL)

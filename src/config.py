@@ -12,8 +12,10 @@ config = {
     # Touch                 #
     #########################
     'metro_api_url': 'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/',
-    'weather_api_url': 'http://api.openweathermap.org/data/2.5/weather?q=',
+    'weather_api_url': 'http://api.openweathermap.org/data/2.5/onecall?',
     'weather_location': 'Washington DC, US',
+    'weather_lon': '-77.0364',
+    'weather_lat': '38.8951',
     'metro_api_retries': 2,
     'refresh_interval': 5,
 
