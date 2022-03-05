@@ -47,7 +47,7 @@ def change_station():
 
 def refresh_weather() -> [dict]:
     try:
-        return WeatherApi.fetch_current_weather(network)
+        return WeatherApi.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
         print('Weather Api is currently on fire. Trying again later ...')
         return None
