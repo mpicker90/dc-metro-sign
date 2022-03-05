@@ -20,11 +20,8 @@ class WeatherBoard:
     def __init__(self, get_new_data):
         self.get_new_data = get_new_data
         self.display = display_creator.create_display()
-	print('display created')
         self.parent_group = displayio.Group(scale = 1, x = 0, y = 0)
-	print('parent group created')
         self.weather = Weather(self.parent_group)
-	print('new weather')
         self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
@@ -46,41 +43,39 @@ class WeatherBoard:
 
 class Weather:
     def __init__(self, parent_group):
-	print('sup')
-        y = (int)(config['character_height'] + config['text_padding']) * 1
-
         self.time_label = Label(config['font'], anchor_point=(0, 0))
         self.time_label.x = 10
-        self.time_label.y = 5
+        self.time_label.y = 12 + config['base_offset']
         self.time_label.color = config['orange']
-        self.time_label.text = '00:00 PM'
+        self.time_label.text = '00:00PM'
 
         self.temp_label = Label(config['font'], anchor_point=(0, 0))
-        self.temp_label.x = 66
-        self.temp_label.y = 2
+        self.temp_label.x = 65
+        self.temp_label.y = 2 + config['base_offset']
         self.temp_label.color = config['orange']
         self.temp_label.text = config['loading_line_text'][:config['train_line_width']]
 
         self.rain_label = Label(config['font'], anchor_point=(0, 0))
-        self.rain_label.x = 80
-        self.rain_label.y = 2
+        self.rain_label.x = 92
+        self.rain_label.y = 2 + config['base_offset']
         self.rain_label.color = config['orange']
         self.rain_label.text = '0% Rain'
 
         self.location_label = Label(config['font'], anchor_point=(0, 0))
-        self.location_label.x = 66
-        self.location_label.y = 23
+        self.location_label.x = 20
+        self.location_label.y = 23 + config['base_offset']
         self.location_label.color = config['orange']
         self.location_label.text = config['weather_location']
 
         self.description_label = Label(config['font'], anchor_point=(0, 0))
-        self.description_label.x = 66
-        self.description_label.y = 13
+        self.description_label.x = 65
+        self.description_label.y = 13 + config['base_offset']
         self.description_label.color = config['orange']
         self.description_label.text = config['loading_destination_text'][:config['destination_max_characters']]
 
         self.group = displayio.Group()
         self.group.append(self.time_label)
+        self.group.append(self.rain_label)
         self.group.append(self.temp_label)
         self.group.append(self.location_label)
         self.group.append(self.description_label)
@@ -101,7 +96,7 @@ class Weather:
         self.temp_label.text = temp_str.split('.')[0] + '°F'
 
     def set_rain(self, rain: str):
-        self.location_label.text = str(rain) + '% Rain'
+        self.rain_label.text = str(rain) + '% Rain'
 
     def set_description(self, description: str):
         self.description_label.text = description
