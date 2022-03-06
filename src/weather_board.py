@@ -52,30 +52,30 @@ class Weather:
 
         self.date_label = Label(config['font'], anchor_point=(0, 0))
         self.date_label.x = 2
-        self.date_label.y = config['base_offset'] + 14
+        self.date_label.y = config['base_offset'] + 13
         self.date_label.color = config['orange']
-        self.date_label.text = 'Jan 01, 0000'
+        self.date_label.text = 'Jan 01, 00'
 
         self.temp_label = Label(config['font'], anchor_point=(0, 0))
-        self.temp_label.x = 65
+        self.temp_label.x = 55
         self.temp_label.y = 2 + config['base_offset']
         self.temp_label.color = config['orange']
         self.temp_label.text = '00°F'
 
         self.rain_label = Label(config['font'], anchor_point=(0, 0))
-        self.rain_label.x = 92
-        self.rain_label.y = 2 + config['base_offset']
+        self.rain_label.x = 86
+        self.rain_label.y = 2 + config['base_offset'] 
         self.rain_label.color = config['orange']
         self.rain_label.text = '0% Rain'
 
         self.location_label = Label(config['font'], anchor_point=(0, 0))
-        self.location_label.x = 20
+        self.location_label.x = 12
         self.location_label.y = 23 + config['base_offset']
         self.location_label.color = config['orange']
         self.location_label.text = config['weather_location']
 
         self.description_label = Label(config['font'], anchor_point=(0, 0))
-        self.description_label.x = 65
+        self.description_label.x = 64
         self.description_label.y = 13 + config['base_offset']
         self.description_label.color = config['orange']
         self.description_label.text = config['loading_destination_text'][:config['destination_max_characters']]

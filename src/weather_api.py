@@ -63,7 +63,7 @@ class WeatherApi:
     def _get_date(epoch_time: int) -> str:
         time_tup = time.localtime(epoch_time)
         mon_abrv = WeatherApi._get_mon_abrv(time_tup.tm_mon)
-        return mon_abrv + ' ' + str(time_tup.tm_mday) + ', ' + str(time_tup.tm_year)
+        return mon_abrv + ' ' + str(time_tup.tm_mday) + ', ' + str(time_tup.tm_year)[-2:]
 
     def _get_time(epoch_time: int) -> str:
         time_tup = time.localtime(epoch_time)
