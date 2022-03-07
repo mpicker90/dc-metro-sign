@@ -1,5 +1,6 @@
 import time
 import board
+import digitalio
 import displayio
 import display_creator
 from config import config
@@ -14,16 +15,17 @@ def change_station(index, station_list, button):
         if index >= len(station_list):
             index = 0
         print(str(index) + ' ' + station_list[index][0] + ' ' + station_list[index][1])
-        parent_group = displayio.Group(max_size=5)
+        print(config['station_map'][station_list[index][0]])
+        parent_group = displayio.Group()
 
-        station_label = Label(config['font'], max_glyphs=len(config['line_header']), anchor_point=(0.5, 0.5))
+        station_label = Label(config['font'], anchor_point=(0, 0))
         station_label.color = config['red']
         station_label.text = config['station_map'][station_list[index][0]] + ' ' + station_list[index][1]
-        station_label.x = 0
+        station_label.x = 10
+        station_label.y = 16
 
         parent_group.append(station_label)
         display.show(parent_group)
 
         time.sleep(1)
     return index
-

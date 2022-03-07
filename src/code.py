@@ -30,7 +30,6 @@ button_down.pull = digitalio.Pull.UP
 
 def refresh_loop(wait_time: int):
     i = 0
-
     while i < wait_time:
         i += 1
         if not button_up.value:
@@ -84,7 +83,7 @@ while True:
             weather_board.refresh()
         except Exception as e:
             print(e)
-        refresh_loop(20)
+        refresh_loop(60)
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:

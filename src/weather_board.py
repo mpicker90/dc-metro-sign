@@ -30,16 +30,19 @@ class WeatherBoard:
         weather_data = self.get_new_data()
         if weather_data is not None:
             print('Reply received.')
-            self._update_weather(weather_data['temp'], weather_data['chance_of_rain'], weather_data['description'],
-                                 weather_data['time'], weather_data['date'])
+            weather = self._update_weather(weather_data['temp'], weather_data['chance_of_rain'],
+                                           weather_data['description'],
+                                           weather_data['time'], weather_data['date'])
             print('Successfully updated.')
         else:
             print('No data received. Clearing display.')
 
         self.display.show(self.parent_group)
+        self.weather.scroll_desc()
 
     def _update_weather(self, temp: int, rain: int, description: str, time: str, dt: str):
         self.weather.update(temp, rain, description, time, dt)
+        return self.weather
 
 
 class Weather:
@@ -64,7 +67,7 @@ class Weather:
 
         self.rain_label = Label(config['font'], anchor_point=(0, 0))
         self.rain_label.x = 86
-        self.rain_label.y = 2 + config['base_offset'] 
+        self.rain_label.y = 2 + config['base_offset']
         self.rain_label.color = config['orange']
         self.rain_label.text = '0% Rain'
 
@@ -122,9 +125,3 @@ class Weather:
         self.set_description(description)
         self.set_time(time)
         self.set_date(date)
-
-    def scroll(self, line):
-        line.x = line.x - 1
-        line_width = line.bounding_box[2]
-        if line.x < -line_width:
-            line.x = self.display.width

@@ -24,7 +24,6 @@ class WeatherApi:
             api_url += "&appid=" + secrets["openweather_token"]
 
             current_value = network.fetch(api_url).json()
-            print(current_value)
             print('Received response from Weather api...')
             normalized_results = WeatherApi._normalize_weather_response(current_value)
 
@@ -40,7 +39,7 @@ class WeatherApi:
     def _normalize_weather_response(weather: dict) -> dict:
         temp = str(weather['current']['temp']).split('.')[0]
         temp_color = WeatherApi._get_temp_color(temp)
-        description = weather['current']['weather'][0]['description']
+        description = weather['current']['weather'][0]['main']
         tim = WeatherApi._get_time(weather['current']['dt'], weather['timezone_offset'])
         dt = WeatherApi._get_date(weather['current']['dt'], weather['timezone_offset'])
         chance_of_rain = weather['minutely'][-1]['precipitation']
