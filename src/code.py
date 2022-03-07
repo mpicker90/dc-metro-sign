@@ -27,6 +27,17 @@ button_down = digitalio.DigitalInOut(board.BUTTON_DOWN)
 button_down.direction = digitalio.Direction.INPUT
 button_down.pull = digitalio.Pull.UP
 
+
+def refresh_loop(wait_time: int):
+    i = 0
+
+    while i < wait_time:
+        i += 1
+        if not button_up.value:
+            change_station()
+        time.sleep(1)
+
+
 def refresh_trains() -> [dict]:
     global STATION_LIST
     global STATION_LIST_INDEX
@@ -37,6 +48,7 @@ def refresh_trains() -> [dict]:
         print('WMATA Api is currently on fire. Trying again later ...')
         return None
 
+
 def change_station():
     print('up button pressed, changing station')
     global STATION_LIST_INDEX
@@ -45,12 +57,14 @@ def change_station():
     global display
     STATION_LIST_INDEX = station_changer.change_station(STATION_LIST_INDEX, STATION_LIST, button_up)
 
+
 def refresh_weather() -> [dict]:
     try:
         return WeatherApi.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
         print('Weather Api is currently on fire. Trying again later ...')
         return None
+
 
 try:
     train_board = TrainBoard(refresh_trains)
@@ -63,20 +77,18 @@ except Exception as e:
     print(e)
 
 while True:
-    if not button_up.value:
-        change_station()
+
     time_board_time = time.time()
     while time.time() - time_board_time <= 120:
         try:
             weather_board.refresh()
-            time.sleep(REFRESH_INTERVAL)
         except Exception as e:
             print(e)
-        time.sleep(20)
+        refresh_loop(20)
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:
             train_board.refresh()
         except Exception as e:
             print(e)
-        time.sleep(REFRESH_INTERVAL)
+        refresh_loop(5)

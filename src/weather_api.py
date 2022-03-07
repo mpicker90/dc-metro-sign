@@ -24,6 +24,7 @@ class WeatherApi:
             api_url += "&appid=" + secrets["openweather_token"]
 
             current_value = network.fetch(api_url).json()
+            print(current_value)
             print('Received response from Weather api...')
             normalized_results = WeatherApi._normalize_weather_response(current_value)
 
@@ -37,11 +38,11 @@ class WeatherApi:
                 raise WeatherApiOnFireException()
 
     def _normalize_weather_response(weather: dict) -> dict:
-        temp = weather['current']['temp']
+        temp = str(weather['current']['temp']).split('.')[0]
         temp_color = WeatherApi._get_temp_color(temp)
         description = weather['current']['weather'][0]['description']
-        tim = WeatherApi._get_time(weather['current']['dt'])
-        dt = WeatherApi._get_date(weather['current']['dt'])
+        tim = WeatherApi._get_time(weather['current']['dt'], weather['timezone_offset'])
+        dt = WeatherApi._get_date(weather['current']['dt'], weather['timezone_offset'])
         chance_of_rain = weather['minutely'][-1]['precipitation']
         rain_color = WeatherApi._get_rain_color(chance_of_rain)
         return {
@@ -60,29 +61,29 @@ class WeatherApi:
     def _get_rain_color(chance_of_rain: int) -> int:
         return config['blue']
 
-    def _get_date(epoch_time: int) -> str:
-        time_tup = time.localtime(epoch_time)
+    def _get_date(epoch_time: int, tz_offset: int) -> str:
+        time_tup = time.localtime(epoch_time + tz_offset)
         mon_abrv = WeatherApi._get_mon_abrv(time_tup.tm_mon)
         return mon_abrv + ' ' + str(time_tup.tm_mday) + ', ' + str(time_tup.tm_year)[-2:]
 
-    def _get_time(epoch_time: int) -> str:
-        time_tup = time.localtime(epoch_time)
+    def _get_time(epoch_time: int, tz_offset: int) -> str:
+        time_tup = time.localtime(epoch_time + tz_offset)
         str_min = str(time_tup.tm_min)
         if len(str_min) == 1:
             str_min = '0' + str_min
-        hour = time_tup.tm_hour - 5
+
         if time_tup.tm_isdst == 1:
             hour += 1
         ampm = 'am'
-        if hour >= 12:
+        if time_tup.tm_hour >= 12:
             ampm = 'pm'
 
-        if hour > 12 and hour != 0:
-            hour -= 12
-        elif hour == 0:
+        if time_tup.tm_hour > 12 and time_tup.tm_hour != 0:
+            time_tup.tm_hour -= 12
+        elif time_tup.tm_hour == 0:
             hour = 12
 
-        str_hour = str(hour)
+        str_hour = str(time_tup.tm_hour)
 
         if len(str_hour) != 2:
             str_hour = '0' + str_hour
