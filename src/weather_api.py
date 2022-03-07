@@ -69,21 +69,22 @@ class WeatherApi:
     def _get_time(epoch_time: int, tz_offset: int) -> str:
         time_tup = time.localtime(epoch_time + tz_offset)
         str_min = str(time_tup.tm_min)
+        hour = time_tup.tm_hour
         if len(str_min) == 1:
             str_min = '0' + str_min
 
         if time_tup.tm_isdst == 1:
             hour += 1
         ampm = 'am'
-        if time_tup.tm_hour >= 12:
+        if hour >= 12:
             ampm = 'pm'
 
-        if time_tup.tm_hour > 12 and time_tup.tm_hour != 0:
-            time_tup.tm_hour -= 12
-        elif time_tup.tm_hour == 0:
+        if hour > 12 and hour != 0:
+            hour -= 12
+        elif hour == 0:
             hour = 12
 
-        str_hour = str(time_tup.tm_hour)
+        str_hour = str(hour)
 
         if len(str_hour) != 2:
             str_hour = '0' + str_hour
