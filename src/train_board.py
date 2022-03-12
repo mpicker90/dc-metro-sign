@@ -1,6 +1,7 @@
 import displayio
 import display_creator
 from adafruit_display_text.label import Label
+from adafruit_display_shapes.rect import Rect
 from config import config
 
 
@@ -46,7 +47,8 @@ class TrainBoard:
         self.heading_min_label = Label(config['font'], anchor_point=(0, 0))
         self.heading_min_label.color = config['red']
         self.heading_min_label.text = config['min_header']
-        self.heading_min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
+        self.heading_min_label.x = config['matrix_width'] - (
+                    config['min_label_characters'] * config['character_width']) - 2
         self.heading_min_label.y = config['base_offset']
 
         self.header_group = displayio.Group()
@@ -55,7 +57,10 @@ class TrainBoard:
         self.header_group.append(self.heading_dest_label)
         self.header_group.append(self.heading_min_label)
 
+        self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
+
         self.parent_group.append(self.header_group)
+        self.parent_group.append(self.wifi_rect)
 
         self.trains = []
         for i in range(config['num_trains']):
@@ -65,7 +70,9 @@ class TrainBoard:
 
     def refresh(self) -> bool:
         print('Refreshing train information...')
+        self.wifi_rect.fill = config['red']
         train_data = self.get_new_data()
+        self.wifi_rect.fill = config['off']
         if train_data is not None:
             print('Reply received.')
             for i in range(config['num_trains']):

@@ -1,6 +1,7 @@
 import displayio
 import display_creator
 from adafruit_display_text.label import Label
+from adafruit_display_shapes.rect import Rect
 from config import config
 import gc
 
@@ -23,11 +24,15 @@ class WeatherBoard:
         self.display = display_creator.create_display()
         self.parent_group = displayio.Group(scale=1, x=0, y=0)
         self.weather = Weather(self.parent_group)
+        self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
+        self.parent_group.append(self.wifi_rect)
         self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
         print('Refreshing weather information...')
+        self.wifi_rect.fill = config['red']
         weather_data = self.get_new_data()
+        self.wifi_rect.fill = config['off']
         if weather_data is not None:
             print('Reply received.')
             weather = self._update_weather(weather_data['temp'], weather_data['chance_of_rain'],
