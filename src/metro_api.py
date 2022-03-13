@@ -22,13 +22,10 @@ class MetroApi:
             normalized_results = list(map(MetroApi._normalize_train_response, trains))
 
             return normalized_results
-        except RuntimeError:
-            if retry_attempt < config['metro_api_retries']:
-                print('Failed to connect to WMATA API. Reattempting...')
-                # Recursion for retry logic because I don't care about your stack
-                return MetroApi._fetch_train_predictions(station_code, group, network, retry_attempt + 1)
-            else:
-                raise MetroApiOnFireException()
+        except RuntimeError as e:
+            print('Failed to connect to WMATA API.')
+            print(e)
+            raise MetroApiOnFireException()
 
     def _normalize_train_response(train: dict) -> dict:
         line = train['Line']

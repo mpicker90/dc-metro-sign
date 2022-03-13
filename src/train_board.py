@@ -58,9 +58,11 @@ class TrainBoard:
         self.header_group.append(self.heading_min_label)
 
         self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
+        self.bad_response_rect = Rect(1, 31, 1, 1, fill=config['off'])
 
         self.parent_group.append(self.header_group)
         self.parent_group.append(self.wifi_rect)
+        self.parent_group.append(self.bad_response_rect)
 
         self.trains = []
         for i in range(config['num_trains']):
@@ -69,7 +71,9 @@ class TrainBoard:
         self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
+        self.display.show(self.parent_group)
         print('Refreshing train information...')
+        self.bad_response_rect.fill = config['off']
         self.wifi_rect.fill = config['red']
         train_data = self.get_new_data()
         self.wifi_rect.fill = config['off']
@@ -85,12 +89,10 @@ class TrainBoard:
 
             print('Successfully updated.')
         else:
-            print('No data received. Clearing display.')
+            print('No data received.')
+            self.bad_response_rect.fill = config['blue']
 
-            for i in range(config['num_trains']):
-                self._hide_train(i)
 
-        self.display.show(self.parent_group)
 
     def _hide_train(self, index: int):
         self.trains[index].hide()

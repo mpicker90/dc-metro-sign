@@ -27,13 +27,10 @@ class WeatherApi:
             normalized_results = WeatherApi._normalize_weather_response(current_value)
 
             return normalized_results
-        except RuntimeError:
-            if retry_attempt < config['metro_api_retries']:
-                print('Failed to connect to Weather API. Reattempting...')
-                # Recursion for retry logic because I don't care about your stack
-                return WeatherApi._fetch_weather_predictions(network, retry_attempt + 1)
-            else:
-                raise WeatherApiOnFireException()
+        except RuntimeError as e:
+            print('Failed to connect to Weather API.')
+            print(e)
+            raise WeatherApiOnFireException()
 
     def _normalize_weather_response(weather: dict) -> dict:
         temp = str(weather['current']['temp']).split('.')[0]

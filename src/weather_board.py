@@ -3,7 +3,6 @@ import display_creator
 from adafruit_display_text.label import Label
 from adafruit_display_shapes.rect import Rect
 from config import config
-import gc
 
 
 class WeatherBoard:
@@ -25,24 +24,27 @@ class WeatherBoard:
         self.parent_group = displayio.Group(scale=1, x=0, y=0)
         self.weather = Weather(self.parent_group)
         self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
+        self.bad_response_rect = Rect(1, 31, 1, 1, fill=config['off'])
         self.parent_group.append(self.wifi_rect)
+        self.parent_group.append(self.bad_response_rect)
         self.display.show(self.parent_group)
 
     def refresh(self) -> bool:
         print('Refreshing weather information...')
+        self.display.show(self.parent_group)
+        self.bad_response_rect.fill = config['off']
         self.wifi_rect.fill = config['red']
         weather_data = self.get_new_data()
         self.wifi_rect.fill = config['off']
         if weather_data is not None:
             print('Reply received.')
-            weather = self._update_weather(weather_data['temp'], weather_data['chance_of_rain'],
-                                           weather_data['description'],
-                                           weather_data['time'], weather_data['date'])
+            self._update_weather(weather_data['temp'], weather_data['chance_of_rain'],
+                                 weather_data['description'],
+                                 weather_data['time'], weather_data['date'])
             print('Successfully updated.')
         else:
-            print('No data received. Clearing display.')
-
-        self.display.show(self.parent_group)
+            self.bad_response_rect.fill = config['blue']
+            print('No data received.')
 
     def _update_weather(self, temp: int, rain: int, description: str, time: str, dt: str):
         self.weather.update(temp, rain, description, time, dt)

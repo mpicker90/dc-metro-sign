@@ -54,7 +54,6 @@ def change_station():
     global STATION_LIST_INDEX
     global STATION_LIST
     global button_up
-    global display
     STATION_LIST_INDEX = station_changer.change_station(STATION_LIST_INDEX, STATION_LIST, button_up)
 
 
@@ -66,31 +65,24 @@ def refresh_weather() -> [dict]:
         return None
 
 
-try:
-    train_board = TrainBoard(refresh_trains)
-except Exception as e:
-    print(e)
-
-try:
-    weather_board = WeatherBoard(refresh_weather)
-except Exception as e:
-    print(e)
+train_board = TrainBoard(refresh_trains)
+weather_board = WeatherBoard(refresh_weather)
 
 while True:
-    time_board_time = time.time()
-    while time.time() - time_board_time <= 120:
-        print(gc.mem_free())
+    weather_board_time = time.time()
+    while time.time() - weather_board_time <= 120:
         try:
             weather_board.refresh()
         except Exception as e:
+            print("error occurred in weather_board")
             print(e)
         refresh_loop(60)
 
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
-        print(gc.mem_free())
         try:
             train_board.refresh()
         except Exception as e:
+            print("error occurred in train_board")
             print(e)
-        refresh_loop(5)
+        refresh_loop(20)
