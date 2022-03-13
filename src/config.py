@@ -51,6 +51,7 @@ config = {
     'green': 0x00FF00,
     'blue': 0x0000FF,
     'silver': 0xAAAAAA,
+    'off': 0x000000,
 
     'station_map': {
         'G03': 'Addison Road BL,SV',
