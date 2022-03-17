@@ -38,7 +38,10 @@ class WeatherApi:
         description = weather['current']['weather'][0]['main']
         tim = WeatherApi._get_time(weather['current']['dt'], weather['timezone_offset'])
         dt = WeatherApi._get_date(weather['current']['dt'], weather['timezone_offset'])
-        chance_of_rain = str(WeatherApi._get_chance_of_rain(weather['minutely'])).split('.')[0]
+	if 'minutely' in weather:
+        	chance_of_rain = str(WeatherApi._get_chance_of_rain(weather['minutely'])).split('.')[0]
+	else:
+		chance_of_rain = "--"
         rain_color = WeatherApi._get_rain_color(chance_of_rain)
         return {
             'temp': temp,
