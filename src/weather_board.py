@@ -126,6 +126,12 @@ class Weather:
         self.rain_label.text = str(rain) + 'mm♀'
 
     def set_description(self, description: str):
+        if len(description) < 10:
+            for x in range(10 - len(description)):
+                if(x == 0 or x%2 == 0):
+                    description = " " + description
+                else:
+                    description = description + " "
         self.description_label.text = description
 
     def set_time(self, time_sec: int, time_offset: int):

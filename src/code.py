@@ -70,14 +70,12 @@ train_board = TrainBoard(refresh_trains)
 weather_board = WeatherBoard(refresh_weather)
 
 while True:
-    weather_board_time = time.time()
-    while time.time() - weather_board_time <= 120:
-        try:
-            weather_board.refresh()
-        except Exception as e:
-            print("error occurred in weather_board")
-            print(e)
-        refresh_loop(60)
+    try:
+        weather_board.refresh()
+    except Exception as e:
+        print("error occurred in weather_board")
+        print(e)
+    refresh_loop(120)
 
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
