@@ -55,6 +55,7 @@ class WeatherBoard:
         self.weather.update_time()
         return self.weather
 
+
 class Weather:
     def __init__(self, parent_group):
 
@@ -87,16 +88,16 @@ class Weather:
         self.rain_label.text = '  0mm♀'
 
         self.location_label = Label(config['font'], anchor_point=(0, 0))
-        self.location_label.x = int((128 - (len(config['weather_location']) * 6)) /2)
+        self.location_label.x = self._center_offset(0, config['weather_location'])
         self.location_label.y = 23 + config['base_offset']
         self.location_label.color = config['orange']
         self.location_label.text = config['weather_location']
 
         self.description_label = Label(config['font'], anchor_point=(0, 0))
-        self.description_label.x = 70
+        self.description_label.x = self._center_offset((config['matrix_width'] / 2), config['loading_destination_text'])
         self.description_label.y = 13 + config['base_offset']
         self.description_label.color = config['orange']
-        self.description_label.text = config['loading_destination_text'][:config['destination_max_characters']]
+        self.description_label.text = config['loading_destination_text']
 
         self.group = displayio.Group()
         self.group.append(self.time_label)
@@ -115,10 +116,7 @@ class Weather:
         self.group.hidden = True
 
     def set_temp(self, temp: int):
-        # Ensuring we have a string
         temp_str = str(temp)
-
-        self.temp_label.color = config['orange']
         self.temp_label.text = temp_str.split('.')[0] + '°F'
 
     def set_rain(self, rain: str):
@@ -127,7 +125,7 @@ class Weather:
         self.rain_label.text = str(rain) + 'mm♀'
 
     def set_description(self, description: str):
-        self.description_label.x = int(64 + ((64 - (len(description)*6))/2))
+        self.description_label.x = self._center_offset((config['matrix_width'] / 2), description)
         self.description_label.text = description
 
     def set_time(self, time_sec: int, time_offset: int):
@@ -204,3 +202,7 @@ class Weather:
             str_hour = '0' + str_hour
 
         return str_hour + ':' + str_min + ampm
+
+    def _center_offset(self, base_offset: int, text: str):
+        return int(base_offset + (((config['matrix_width'] - base_offset) / 2) - ((len(text) * config['character_width']) / 2)))
+

@@ -16,15 +16,13 @@ config = {
     'weather_location': 'Washington DC, US',
     'weather_lon': '-77.0364',
     'weather_lat': '38.8951',
-    'metro_api_retries': 2,
-    'refresh_interval': 5,
 
     # Display Settings
     'matrix_width': 128,
     'num_trains': 3,
     'font': bitmap_font.load_font('lib/6x10.bdf'),
 
-    'character_width': 5,
+    'character_width': 6,
     'character_height': 7,
     'text_padding': 1,
     'base_offset': 3,

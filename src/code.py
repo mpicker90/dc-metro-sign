@@ -17,7 +17,6 @@ network = Network(status_neopixel=board.NEOPIXEL)
 
 STATION_LIST = config['station_list']
 STATION_LIST_INDEX = 0
-REFRESH_INTERVAL = config['refresh_interval']
 
 # used to cycle stations
 button_up = digitalio.DigitalInOut(board.BUTTON_UP)
