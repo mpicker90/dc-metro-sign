@@ -70,7 +70,7 @@ class TrainBoard:
 
         self.display.show(self.parent_group)
 
-    def refresh(self) -> bool:
+    def refresh(self):
         self.display.show(self.parent_group)
         print('Refreshing train information...')
         self.bad_response_rect.fill = config['off']

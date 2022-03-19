@@ -30,7 +30,7 @@ class WeatherBoard:
         self.parent_group.append(self.bad_response_rect)
         self.display.show(self.parent_group)
 
-    def refresh(self) -> bool:
+    def refresh(self):
         print('Refreshing weather information...')
         self.display.show(self.parent_group)
         self.bad_response_rect.fill = config['off']
