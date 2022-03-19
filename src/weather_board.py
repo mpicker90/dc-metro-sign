@@ -60,6 +60,7 @@ class Weather:
 
         self.initial_time = time.monotonic()
         self.input_time = 0
+
         self.input_offset = 0
         self.time_label = Label(config['font'], anchor_point=(0, 0))
         self.time_label.x = 2
@@ -86,7 +87,7 @@ class Weather:
         self.rain_label.text = '  0mm♀'
 
         self.location_label = Label(config['font'], anchor_point=(0, 0))
-        self.location_label.x = 12
+        self.location_label.x = int((128 - (len(config['weather_location']) * 6)) /2)
         self.location_label.y = 23 + config['base_offset']
         self.location_label.color = config['orange']
         self.location_label.text = config['weather_location']
@@ -126,12 +127,7 @@ class Weather:
         self.rain_label.text = str(rain) + 'mm♀'
 
     def set_description(self, description: str):
-        if len(description) < 10:
-            for x in range(10 - len(description)):
-                if(x == 0 or x%2 == 0):
-                    description = " " + description
-                else:
-                    description = description + " "
+        self.description_label.x = int(64 + ((64 - (len(description)*6))/2))
         self.description_label.text = description
 
     def set_time(self, time_sec: int, time_offset: int):
@@ -185,7 +181,6 @@ class Weather:
         return dict.get(mon)
 
     def _get_time(self, epoch_time: int, tz_offset: int) -> str:
-        print(epoch_time)
         time_tup = time.localtime(epoch_time + tz_offset)
         str_min = str(time_tup.tm_min)
         hour = time_tup.tm_hour
