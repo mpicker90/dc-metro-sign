@@ -33,6 +33,7 @@ def refresh_loop(wait_time: int):
     i = 0
     while i < wait_time:
         i += 1
+        weather_board.update_time()
         if not button_up.value:
             change_station()
         time.sleep(1)
