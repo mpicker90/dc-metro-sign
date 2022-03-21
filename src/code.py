@@ -70,6 +70,7 @@ weather_board = WeatherBoard(refresh_weather)
 
 while True:
     try:
+        gc.collect()
         weather_board.refresh()
     except Exception as e:
         print("error occurred in weather_board")
@@ -79,6 +80,7 @@ while True:
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:
+            gc.collect()
             train_board.refresh()
         except Exception as e:
             print("error occurred in train_board")

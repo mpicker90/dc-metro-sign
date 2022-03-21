@@ -1,6 +1,6 @@
 import displayio
 import display_creator
-from adafruit_display_text.label import Label
+from adafruit_display_text import bitmap_label
 from adafruit_display_shapes.rect import Rect
 from config import config
 
@@ -26,25 +26,25 @@ class TrainBoard:
         self.display = display_creator.create_display()
         self.parent_group = displayio.Group()
 
-        self.heading_line_label = Label(config['font'], anchor_point=(0, 0))
+        self.heading_line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.heading_line_label.color = config['red']
         self.heading_line_label.text = config['line_header']
         self.heading_line_label.x = 0
         self.heading_line_label.y = config['base_offset']
 
-        self.heading_car_label = Label(config['font'], anchor_point=(0, 0))
+        self.heading_car_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.heading_car_label.color = config['red']
         self.heading_car_label.text = config['car_header']
         self.heading_car_label.x = 18
         self.heading_car_label.y = config['base_offset']
 
-        self.heading_dest_label = Label(config['font'], anchor_point=(0, 0))
+        self.heading_dest_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.heading_dest_label.color = config['red']
         self.heading_dest_label.text = config['destination_header']
         self.heading_dest_label.x = 49
         self.heading_dest_label.y = config['base_offset']
 
-        self.heading_min_label = Label(config['font'], anchor_point=(0, 0))
+        self.heading_min_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.heading_min_label.color = config['red']
         self.heading_min_label.text = config['min_header']
         self.heading_min_label.x = config['matrix_width'] - (
@@ -106,25 +106,25 @@ class Train:
     def __init__(self, parent_group, index):
         y = (int)(config['character_height'] + config['text_padding']) * (index + 1) + config['base_offset']
 
-        self.line_label = Label(config['font'], anchor_point=(0, 0))
+        self.line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.line_label.x = 0
         self.line_label.y = y
         self.line_label.color = config['orange']
         self.line_label.text = config['loading_line_text'][:config['train_line_width']]
 
-        self.car_label = Label(config['font'], anchor_point=(0, 0))
+        self.car_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.car_label.x = 20
         self.car_label.y = y
         self.car_label.color = config['orange']
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
-        self.destination_label = Label(config['font'], anchor_point=(0, 0))
+        self.destination_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.destination_label.x = 41
         self.destination_label.y = y
         self.destination_label.color = config['orange']
         self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]
 
-        self.min_label = Label(config['font'], anchor_point=(0, 0))
+        self.min_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
         self.min_label.y = y
         self.min_label.color = config['orange']

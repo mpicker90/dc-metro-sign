@@ -1,7 +1,7 @@
 import displayio
 import time
 import display_creator
-from adafruit_display_text.label import Label
+from adafruit_display_text import bitmap_label
 from adafruit_display_shapes.rect import Rect
 from config import config
 
@@ -63,38 +63,38 @@ class Weather:
         self.input_time = 0
 
         self.input_offset = 0
-        self.time_label = Label(config['font'], anchor_point=(0, 0))
+        self.time_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.time_label.x = 2
         self.time_label.y = config['base_offset'] + 2
         self.time_label.color = config['orange']
         self.time_label.text = '00:00PM'
 
-        self.date_label = Label(config['font'], anchor_point=(0, 0))
-        self.date_label.x = 2
+        self.date_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.date_label.x = display_creator.left_center('Jan 01, 00')
         self.date_label.y = config['base_offset'] + 13
         self.date_label.color = config['orange']
         self.date_label.text = 'Jan 01, 00'
 
-        self.temp_label = Label(config['font'], anchor_point=(0, 0))
-        self.temp_label.x = 58
+        self.temp_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.temp_label.x = display_creator.center('00°F')
         self.temp_label.y = 2 + config['base_offset']
         self.temp_label.color = config['orange']
         self.temp_label.text = '00°F'
 
-        self.rain_label = Label(config['font'], anchor_point=(0, 0))
+        self.rain_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.rain_label.x = 90
         self.rain_label.y = 2 + config['base_offset']
         self.rain_label.color = config['orange']
         self.rain_label.text = '  0mm♀'
 
-        self.location_label = Label(config['font'], anchor_point=(0, 0))
-        self.location_label.x = self._center_offset(0, config['weather_location'])
+        self.location_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.location_label.x = display_creator.center(config['weather_location'])
         self.location_label.y = 23 + config['base_offset']
         self.location_label.color = config['orange']
         self.location_label.text = config['weather_location']
 
-        self.description_label = Label(config['font'], anchor_point=(0, 0))
-        self.description_label.x = self._center_offset((config['matrix_width'] / 2), config['loading_destination_text'])
+        self.description_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.description_label.x = display_creator.right_center(config['loading_destination_text'])
         self.description_label.y = 13 + config['base_offset']
         self.description_label.color = config['orange']
         self.description_label.text = config['loading_destination_text']
@@ -125,7 +125,7 @@ class Weather:
         self.rain_label.text = str(rain) + 'mm♀'
 
     def set_description(self, description: str):
-        self.description_label.x = self._center_offset((config['matrix_width'] / 2), description)
+        self.description_label.x = display_creator.right_center(description)
         self.description_label.text = description
 
     def set_time(self, time_sec: int, time_offset: int):
@@ -139,6 +139,7 @@ class Weather:
         current_time = time_sec + time_change
         formatted_dt = self._get_date(current_time, time_offset)
         self.date_label.text = formatted_dt
+        display_creator.left_center(formatted_dt)
 
     def update(self, temp: int, rain: int, description: str, time_sec: int, time_offset: int):
         self.show()
@@ -202,7 +203,4 @@ class Weather:
             str_hour = '0' + str_hour
 
         return str_hour + ':' + str_min + ampm
-
-    def _center_offset(self, base_offset: int, text: str):
-        return int(base_offset + (((config['matrix_width'] - base_offset) / 2) - ((len(text) * config['character_width']) / 2)))
 
