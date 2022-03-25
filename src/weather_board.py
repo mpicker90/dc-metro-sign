@@ -1,6 +1,6 @@
 import displayio
 import time
-import display_creator
+import display_util
 from adafruit_display_text import bitmap_label
 from adafruit_display_shapes.rect import Rect
 from config import config
@@ -19,46 +19,11 @@ class WeatherBoard:
             }
     """
 
-    def __init__(self, get_new_data):
+    def __init__(self, get_new_data, display):
         self.get_new_data = get_new_data
-        self.display = display_creator.create_display()
-        self.parent_group = displayio.Group(scale=1, x=0, y=0)
-        self.weather = Weather(self.parent_group)
+        self.display = display
         self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
         self.bad_response_rect = Rect(1, 31, 1, 1, fill=config['off'])
-        self.parent_group.append(self.wifi_rect)
-        self.parent_group.append(self.bad_response_rect)
-        self.display.show(self.parent_group)
-
-    def refresh(self):
-        print('Refreshing weather information...')
-        self.display.show(self.parent_group)
-        self.bad_response_rect.fill = config['off']
-        self.wifi_rect.fill = config['red']
-        weather_data = self.get_new_data()
-        self.wifi_rect.fill = config['off']
-        if weather_data is not None:
-            print('Reply received.')
-            self._update_weather(weather_data['temp'], weather_data['chance_of_rain'],
-                                 weather_data['description'],
-                                 weather_data['time_sec'], weather_data['time_offset'])
-            print('Successfully updated.')
-        else:
-            self.bad_response_rect.fill = config['blue']
-            print('No data received.')
-
-    def _update_weather(self, temp: int, rain: int, description: str, time_sec: int, time_offset: int):
-        self.weather.update(temp, rain, description, time_sec, time_offset)
-        return self.weather
-
-    def update_time(self):
-        self.weather.update_time()
-        return self.weather
-
-
-class Weather:
-    def __init__(self, parent_group):
-
         self.initial_time = time.monotonic()
         self.input_time = 0
 
@@ -70,13 +35,13 @@ class Weather:
         self.time_label.text = '00:00PM'
 
         self.date_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.date_label.x = display_creator.left_center('Jan 01, 00')
+        self.date_label.x = display_util.left_center('Jan 01, 00')
         self.date_label.y = config['base_offset'] + 13
         self.date_label.color = config['orange']
         self.date_label.text = 'Jan 01, 00'
 
         self.temp_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.temp_label.x = display_creator.center('00°F')
+        self.temp_label.x = display_util.center('00°F')
         self.temp_label.y = 2 + config['base_offset']
         self.temp_label.color = config['orange']
         self.temp_label.text = '00°F'
@@ -88,32 +53,57 @@ class Weather:
         self.rain_label.text = '  0mm♀'
 
         self.location_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.location_label.x = display_creator.center(config['weather_location'])
+        self.location_label.x = display_util.center(config['weather_location'])
         self.location_label.y = 23 + config['base_offset']
         self.location_label.color = config['orange']
         self.location_label.text = config['weather_location']
 
         self.description_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.description_label.x = display_creator.right_center(config['loading_destination_text'])
+        self.description_label.x = display_util.right_center(config['loading_destination_text'])
         self.description_label.y = 13 + config['base_offset']
         self.description_label.color = config['orange']
         self.description_label.text = config['loading_destination_text']
 
-        self.group = displayio.Group()
-        self.group.append(self.time_label)
-        self.group.append(self.rain_label)
-        self.group.append(self.temp_label)
-        self.group.append(self.location_label)
-        self.group.append(self.description_label)
-        self.group.append(self.date_label)
+        self.parent_group = displayio.Group()
+        self.parent_group.append(self.time_label)
+        self.parent_group.append(self.rain_label)
+        self.parent_group.append(self.temp_label)
+        self.parent_group.append(self.location_label)
+        self.parent_group.append(self.description_label)
+        self.parent_group.append(self.date_label)
+        self.parent_group.append(self.wifi_rect)
+        self.parent_group.append(self.bad_response_rect)
 
-        parent_group.append(self.group)
+    def refresh(self):
+        print('Refreshing weather information...')
+        self.display.show(self.parent_group)
+        self.bad_response_rect.fill = config['off']
+        self.wifi_rect.fill = config['red']
+        weather_data = self.get_new_data()
+        self.wifi_rect.fill = config['off']
+        if weather_data is not None:
+            print('Reply received.')
+            self.update(weather_data['temp'], weather_data['chance_of_rain'],
+                                 weather_data['description'],
+                                 weather_data['time_sec'], weather_data['time_offset'])
+            print('Successfully updated.')
+        else:
+            self.bad_response_rect.fill = config['blue']
+            print('No data received.')
+
+
+    def update_time(self):
+        self.weather.update_time()
+        return self.weather
+
+    def get_group(self):
+        return self.parent_group
 
     def show(self):
-        self.group.hidden = False
+        self.parent_group.hidden = False
 
     def hide(self):
-        self.group.hidden = True
+        self.parent_group.hidden = True
 
     def set_temp(self, temp: int):
         temp_str = str(temp)
@@ -125,7 +115,7 @@ class Weather:
         self.rain_label.text = str(rain) + 'mm♀'
 
     def set_description(self, description: str):
-        self.description_label.x = display_creator.right_center(description)
+        self.description_label.x = display_util.right_center(description)
         self.description_label.text = description
 
     def set_time(self, time_sec: int, time_offset: int):
@@ -139,12 +129,13 @@ class Weather:
         current_time = time_sec + time_change
         formatted_dt = self._get_date(current_time, time_offset)
         self.date_label.text = formatted_dt
-        display_creator.left_center(formatted_dt)
+        display_util.left_center(formatted_dt)
 
     def update(self, temp: int, rain: int, description: str, time_sec: int, time_offset: int):
         self.show()
-        self.input_time = time_sec
-        self.input_offset = time_offset
+        if time_sec is not None:
+            self.input_time = time_sec
+            self.input_offset = time_offset
         self.set_temp(temp)
         self.set_rain(rain)
         self.set_description(description)
@@ -203,4 +194,3 @@ class Weather:
             str_hour = '0' + str_hour
 
         return str_hour + ':' + str_min + ampm
-

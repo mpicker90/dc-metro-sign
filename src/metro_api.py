@@ -6,9 +6,6 @@ class MetroApiOnFireException(Exception):
 
 class MetroApi:
     def fetch_train_predictions(station_code: str, group: str, network) -> [dict]:
-        return MetroApi._fetch_train_predictions(station_code, group, network, retry_attempt=0)
-
-    def _fetch_train_predictions(station_code: str, group: str, network, retry_attempt: int) -> [dict]:
         try:
             api_url = config['metro_api_url'] + station_code
             train_data = network.fetch(api_url, headers={
@@ -60,7 +57,7 @@ class MetroApi:
             return config['silver']
 
     def _get_car_color(car: str) -> int:
-        if car == '6':
-            return config['orange']
-        else:
+        if car == '8':
             return config['green']
+        else:
+            return config['orange']
