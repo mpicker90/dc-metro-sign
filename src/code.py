@@ -2,19 +2,22 @@
 import time
 import board
 import digitalio
-import station_changer
 import gc
 
+import display_util
 from adafruit_matrixportal.network import Network
-
 from config import config
-from train_board import TrainBoard
+from metro_board import TrainBoard
 from weather_board import WeatherBoard
+from station_changer import Station_Changer
 from metro_api import MetroApi, MetroApiOnFireException
 from weather_api import WeatherApi, WeatherApiOnFireException
 
+print("start: " + str(gc.mem_free()))
 network = Network(status_neopixel=board.NEOPIXEL)
-
+print("network: " + str(gc.mem_free()))
+display = display_util.create_display()
+print("display: " + str(gc.mem_free()))
 STATION_LIST = config['station_list']
 STATION_LIST_INDEX = 0
 
@@ -29,12 +32,16 @@ button_down.pull = digitalio.Pull.UP
 
 
 def refresh_loop(wait_time: int):
+    global STATION_LIST_INDEX
     i = 0
     while i < wait_time:
         i += 1
-        weather_board.update_time()
+        try:
+            weather_board.update_time()
+        except Exception as e:
+            print(e)
         if not button_up.value:
-            change_station()
+            STATION_LIST_INDEX = station_changer_board.change_station(STATION_LIST_INDEX)
         time.sleep(1)
 
 
@@ -48,15 +55,6 @@ def refresh_trains() -> [dict]:
         print('WMATA Api is currently on fire. Trying again later ...')
         return None
 
-
-def change_station():
-    print('up button pressed, changing station')
-    global STATION_LIST_INDEX
-    global STATION_LIST
-    global button_up
-    STATION_LIST_INDEX = station_changer.change_station(STATION_LIST_INDEX, STATION_LIST, button_up)
-
-
 def refresh_weather() -> [dict]:
     try:
         return WeatherApi.fetch_weather_predictions(network)
@@ -64,13 +62,19 @@ def refresh_weather() -> [dict]:
         print('Weather Api is currently on fire. Trying again later ...')
         return None
 
-
-train_board = TrainBoard(refresh_trains)
-weather_board = WeatherBoard(refresh_weather)
+print("pre boards: " + str(gc.mem_free()))
+train_board = TrainBoard(refresh_trains, display)
+print("train board: " + str(gc.mem_free()))
+weather_board = WeatherBoard(refresh_weather, display)
+print("weather boards: " + str(gc.mem_free()))
+station_changer_board = Station_Changer(STATION_LIST, button_up, display)
+print("station changer: " + str(gc.mem_free()))
 
 while True:
     try:
+        print(gc.mem_free())
         gc.collect()
+        print(gc.mem_free())
         weather_board.refresh()
     except Exception as e:
         print("error occurred in weather_board")
@@ -80,9 +84,11 @@ while True:
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:
+            print(gc.mem_free())
             gc.collect()
+            print(gc.mem_free())
             train_board.refresh()
         except Exception as e:
             print("error occurred in train_board")
             print(e)
-        refresh_loop(20)
+        refresh_loop(5)

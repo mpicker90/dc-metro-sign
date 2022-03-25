@@ -1,5 +1,5 @@
 import displayio
-import display_creator
+import display_util
 from adafruit_display_text import bitmap_label
 from adafruit_display_shapes.rect import Rect
 from config import config
@@ -21,11 +21,10 @@ class TrainBoard:
         ]
     """
 
-    def __init__(self, get_new_data):
+    def __init__(self, get_new_data, display):
         self.get_new_data = get_new_data
-        self.display = display_creator.create_display()
         self.parent_group = displayio.Group()
-
+        self.display = display
         self.heading_line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.heading_line_label.color = config['red']
         self.heading_line_label.text = config['line_header']
@@ -68,11 +67,9 @@ class TrainBoard:
         for i in range(config['num_trains']):
             self.trains.append(Train(self.parent_group, i))
 
-        self.display.show(self.parent_group)
-
     def refresh(self):
-        self.display.show(self.parent_group)
         print('Refreshing train information...')
+        self.display.show(self.parent_group)
         self.bad_response_rect.fill = config['off']
         self.wifi_rect.fill = config['red']
         train_data = self.get_new_data()
@@ -101,6 +98,8 @@ class TrainBoard:
                       minutes: str):
         self.trains[index].update(line, line_color, car_length, car_color, destination, minutes)
 
+    def get_group(self):
+        return self.parent_group
 
 class Train:
     def __init__(self, parent_group, index):
