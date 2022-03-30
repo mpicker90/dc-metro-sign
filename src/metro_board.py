@@ -3,6 +3,7 @@ import display_util
 from adafruit_display_text import bitmap_label
 from adafruit_display_shapes.rect import Rect
 from config import config
+import time
 
 
 class TrainBoard:
@@ -25,41 +26,17 @@ class TrainBoard:
         self.get_new_data = get_new_data
         self.parent_group = displayio.Group()
         self.display = display
-        self.heading_line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.heading_line_label.color = config['red']
-        self.heading_line_label.text = config['line_header']
-        self.heading_line_label.x = 0
-        self.heading_line_label.y = config['base_offset']
 
-        self.heading_car_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.heading_car_label.color = config['red']
-        self.heading_car_label.text = config['car_header']
-        self.heading_car_label.x = 18
-        self.heading_car_label.y = config['base_offset']
-
-        self.heading_dest_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.heading_dest_label.color = config['red']
-        self.heading_dest_label.text = config['destination_header']
-        self.heading_dest_label.x = 49
-        self.heading_dest_label.y = config['base_offset']
-
-        self.heading_min_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.heading_min_label.color = config['red']
-        self.heading_min_label.text = config['min_header']
-        self.heading_min_label.x = config['matrix_width'] - (
-                    config['min_label_characters'] * config['character_width']) - 2
-        self.heading_min_label.y = config['base_offset']
-
-        self.header_group = displayio.Group()
-        self.header_group.append(self.heading_line_label)
-        self.header_group.append(self.heading_car_label)
-        self.header_group.append(self.heading_dest_label)
-        self.header_group.append(self.heading_min_label)
+        self.header_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.header_label.color = config['red']
+        self.header_label.text = "LN CAR  DEST      MIN"
+        self.header_label.x = 0
+        self.header_label.y = config['base_offset']
 
         self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
         self.bad_response_rect = Rect(1, 31, 1, 1, fill=config['off'])
 
-        self.parent_group.append(self.header_group)
+        self.parent_group.append(self.header_label)
         self.parent_group.append(self.wifi_rect)
         self.parent_group.append(self.bad_response_rect)
 
