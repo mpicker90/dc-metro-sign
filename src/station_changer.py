@@ -10,20 +10,13 @@ class Station_Changer:
         self.display = display
         self.parent_group = displayio.Group()
 
-        self.station_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.station_label.color = config['red']
-        self.station_label.text = config['station_map'][station_list[0][0]]
-        self.station_label.x = 1
-        self.station_label.y = 4
+        self.label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.label.color = config['red']
+        self.label.text = config['station_map'][station_list[0][0]]
+        self.label.x = 1
+        self.label.y = 4
 
-        self.platform_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.platform_label.color = config['red']
-        self.platform_label.text = station_list[0][1]
-        self.platform_label.x = 2
-        self.platform_label.y = 14
-
-        self.parent_group.append(self.station_label)
-        self.parent_group.append(self.platform_label)
+        self.parent_group.append(self.label)
 
     def change_station(self, index):
         self.display.show(self.parent_group)
@@ -31,8 +24,7 @@ class Station_Changer:
             index += 1
             if index >= len(self.station_list):
                 index = 0
-            self.station_label.text = config['station_map'][self.station_list[index][0]]
-            self.platform_label.text = self.station_list[index][1]
+            self.label.text = config['station_map'][self.station_list[index][0]] + "\n" + self.station_list[index][1]
             time.sleep(1)
         return index
 

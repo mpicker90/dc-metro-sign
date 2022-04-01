@@ -30,7 +30,7 @@ class TrainBoard:
         self.header_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
         self.header_label.color = config['red']
         self.header_label.text = "LN CAR  DEST      MIN"
-        self.header_label.x = 0
+        self.header_label.x = 1
         self.header_label.y = config['base_offset']
 
         self.wifi_rect = Rect(0, 31, 1, 1, fill=config['red'])
@@ -83,34 +83,27 @@ class Train:
         y = (int)(config['character_height'] + config['text_padding']) * (index + 1) + config['base_offset']
 
         self.line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.line_label.x = 0
+        self.line_label.x = 1
         self.line_label.y = y
         self.line_label.color = config['orange']
         self.line_label.text = config['loading_line_text'][:config['train_line_width']]
 
         self.car_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.car_label.x = 20
+        self.car_label.x = 21
         self.car_label.y = y
         self.car_label.color = config['orange']
         self.car_label.text = config['loading_min_text'][:config['train_line_width']]
 
         self.destination_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.destination_label.x = 41
+        self.destination_label.x = 43
         self.destination_label.y = y
         self.destination_label.color = config['orange']
-        self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']]
-
-        self.min_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        self.min_label.x = config['matrix_width'] - (config['min_label_characters'] * config['character_width']) - 2
-        self.min_label.y = y
-        self.min_label.color = config['orange']
-        self.min_label.text = config['loading_min_text']
+        self.destination_label.text = config['loading_destination_text'][:config['destination_max_characters']] + "    " + config['loading_min_text']
 
         self.group = displayio.Group()
         self.group.append(self.line_label)
         self.group.append(self.car_label)
         self.group.append(self.destination_label)
-        self.group.append(self.min_label)
 
         parent_group.append(self.group)
 
@@ -128,8 +121,10 @@ class Train:
         self.car_label.color = car_color
         self.car_label.text = car_length[:config['car_length_max_characters']]
 
-    def set_destination(self, destination: str):
-        self.destination_label.text = destination[:config['destination_max_characters']]
+    def set_destination(self, destination: str, minutes: str):
+        minutes_str = ' ' * (config['min_label_characters'] - len(minutes)) + str(minutes)
+        dest = destination + (11 - len(destination)) * ' '
+        self.destination_label.text = dest + minutes_str
 
     def set_arrival_time(self, minutes: str):
         # Ensuring we have a string
@@ -145,5 +140,4 @@ class Train:
         self.show()
         self.set_line(line, line_color)
         self.set_car(car_length, car_color)
-        self.set_destination(destination)
-        self.set_arrival_time(minutes)
+        self.set_destination(destination, minutes)
