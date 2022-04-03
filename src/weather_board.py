@@ -125,13 +125,15 @@ class WeatherBoard:
 
     def set_description(self):
         self.description_label.text = self.description
+        self.description_label.x = display_util.right_center(self.description)
+
 
     def set_date(self):
         time_change = time.monotonic() - self.initial_time
         current_time = self.input_time + time_change
         formatted_dt = self._get_date(current_time)
         self.date_label.text = formatted_dt
-        display_util.left_center(formatted_dt)
+        self.date_label.x = display_util.left_center(formatted_dt)
 
     def _get_date(self, current_time: int) -> str:
         time_tup = time.localtime(current_time + self.input_offset)
