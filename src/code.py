@@ -12,6 +12,7 @@ from watchdog import WatchDogMode
 from config import config
 from metro_board import TrainBoard
 from weather_board import WeatherBoard
+from pong_board import PongBoard
 from station_changer import Station_Changer
 from metro_api import MetroApi, MetroApiOnFireException
 from weather_api import WeatherApi, WeatherApiOnFireException
@@ -54,6 +55,11 @@ def refresh_loop(wait_time: int):
             print(e)
         if not button_up.value:
             STATION_LIST_INDEX = station_changer_board.change_station(STATION_LIST_INDEX)
+        if not button_down.value:
+            train_board = None
+            weather_board = None
+            gc.collect()
+            PongBoard(display, w)
         time.sleep(1)
 
 
