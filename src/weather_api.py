@@ -26,6 +26,7 @@ class WeatherApi:
         except RuntimeError as e:
             print('Failed to connect to Weather API.')
             print(e)
+            network._wifi.esp.reset()
             raise WeatherApiOnFireException()
 
     def _normalize_weather_response(weather: dict) -> dict:

@@ -6,6 +6,9 @@ import gc
 
 import display_util
 from adafruit_matrixportal.network import Network
+from microcontroller import watchdog as w
+from watchdog import WatchDogMode
+
 from config import config
 from metro_board import TrainBoard
 from weather_board import WeatherBoard
@@ -15,6 +18,7 @@ from weather_api import WeatherApi, WeatherApiOnFireException
 
 print("start: " + str(gc.mem_free()))
 network = Network(status_neopixel=board.NEOPIXEL)
+network.fetch("http://example.com")
 print("network: " + str(gc.mem_free()))
 display = display_util.create_display()
 print("display: " + str(gc.mem_free()))
@@ -30,11 +34,19 @@ button_down = digitalio.DigitalInOut(board.BUTTON_DOWN)
 button_down.direction = digitalio.Direction.INPUT
 button_down.pull = digitalio.Pull.UP
 
+w.timeout = 15
+w.mode = WatchDogMode.RESET
+
 
 def refresh_loop(wait_time: int):
     global STATION_LIST_INDEX
+    global train_board
+    global weather_board
+    global w
+
     i = 0
     while i < wait_time:
+        w.feed()
         i += 1
         try:
             weather_board.update_time()
@@ -55,12 +67,14 @@ def refresh_trains() -> [dict]:
         print('WMATA Api is currently on fire. Trying again later ...')
         return None
 
+
 def refresh_weather() -> [dict]:
     try:
         return WeatherApi.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
         print('Weather Api is currently on fire. Trying again later ...')
         return None
+
 
 print("pre boards: " + str(gc.mem_free()))
 train_board = TrainBoard(refresh_trains, display)
