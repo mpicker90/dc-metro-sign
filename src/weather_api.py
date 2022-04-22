@@ -26,7 +26,6 @@ class WeatherApi:
         except RuntimeError as e:
             print('Failed to connect to Weather API.')
             print(e)
-            network._wifi.esp.reset()
             raise WeatherApiOnFireException()
 
     def _normalize_weather_response(weather: dict) -> dict:
@@ -50,8 +49,9 @@ class WeatherApi:
             'temp': temp,
             'description': description,
             'time_sec': time_sec,
+            'init_time': time.monotonic(),
             'time_offset': time_offset,
-            'chance_of_rain': chance_of_rain,
+            'rain': chance_of_rain,
         }
 
     def _get_chance_of_rain(predictions) -> int:
