@@ -8,15 +8,17 @@ import display_util
 from adafruit_matrixportal.network import Network
 from microcontroller import watchdog as w
 from watchdog import WatchDogMode
+
 from secrets import secrets
 
 from config import config
 import metro_board
 import weather_board
+import weather_api
+import station_changer
 from pong_board import PongBoard
-from station_changer import Station_Changer
 from metro_api import MetroApi, MetroApiOnFireException
-from weather_api import WeatherApi, WeatherApiOnFireException
+from weather_api import WeatherApiOnFireException
 
 try:
     w.feed()
@@ -53,8 +55,10 @@ def refresh_loop(wait_time: int):
     while i < wait_time:
         w.feed()
         i += 1
-        if not button_up.value:
-            STATION_LIST_INDEX = station_changer_board.change_station(STATION_LIST_INDEX)
+        while not button_up.value:
+            STATION_LIST_INDEX, parent_group = station_changer.update(STATION_LIST, STATION_LIST_INDEX)
+            display.show(parent_group)
+            time.sleep(1)
         if not button_down.value:
             gc.collect()
             PongBoard(display, w)
@@ -83,7 +87,7 @@ def refresh_weather() -> [dict]:
 
 def _refresh_weather(i: int) -> [dict]:
     try:
-        return WeatherApi.fetch_weather_predictions(network)
+        return weather_api.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
         print('Weather Api is currently on fire. Trying again later ...')
         handle_bad_requests(i)
@@ -102,18 +106,23 @@ def handle_bad_requests(reset_times):
     network._wifi.esp.connect(secrets)
 
 
-station_changer_board = Station_Changer(STATION_LIST, button_up, display)
-
 gc.collect()
+print(gc.mem_free())
 while True:
     weather_board_time = time.time()
     data = refresh_weather()
+    gc.collect()
+
+    print(gc.mem_free())
+
     while time.time() - weather_board_time <= 180:
+        w.feed()
         try:
             gc.collect()
             display.show(weather_board.display(data))
             refresh_loop(1)
             gc.collect()
+            print(gc.mem_free())
         except Exception as e:
             print("error occurred in weather_board")
             print(e)
@@ -121,7 +130,10 @@ while True:
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:
+            gc.collect()
             display.show(metro_board.display(refresh_trains()))
+            gc.collect()
+            print(gc.mem_free())
         except Exception as e:
             print("error occurred in train_board")
             print(e)

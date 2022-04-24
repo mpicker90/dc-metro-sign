@@ -7,13 +7,10 @@ from config import config
 def display(data):
     parent_group = displayio.Group()
 
-    try:
-        parent_group.append(set_top_line(data))
-        parent_group.append(set_date(data))
-        parent_group.append(set_description(data))
-        parent_group.append(set_location(data))
-    except Exception as e:
-        print(e)
+    parent_group.append(set_top_line(data))
+    parent_group.append(set_date(data))
+    parent_group.append(set_description(data))
+    parent_group.append(set_location(data))
 
     return parent_group
 
