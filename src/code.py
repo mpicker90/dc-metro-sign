@@ -52,10 +52,13 @@ w.feed()
 def refresh_loop(wait_time: int):
     global STATION_LIST_INDEX
     i = 0
+    button_pressed = False
+
     while i < wait_time:
         w.feed()
         i += 1
         while not button_up.value:
+            button_pressed = True
             STATION_LIST_INDEX, parent_group = station_changer.update(STATION_LIST, STATION_LIST_INDEX)
             display.show(parent_group)
             time.sleep(1)
@@ -63,6 +66,8 @@ def refresh_loop(wait_time: int):
             gc.collect()
             PongBoard(display, w)
         time.sleep(1)
+        if button_pressed:
+            break
 
 
 def refresh_trains() -> [dict]:
@@ -107,13 +112,13 @@ def handle_bad_requests(reset_times):
 
 
 gc.collect()
-print(gc.mem_free())
+print("pre loop ", gc.mem_free())
 while True:
     weather_board_time = time.time()
     data = refresh_weather()
     gc.collect()
 
-    print(gc.mem_free())
+    print("after weather call ", gc.mem_free())
 
     while time.time() - weather_board_time <= 180:
         w.feed()
@@ -122,7 +127,6 @@ while True:
             display.show(weather_board.display(data))
             refresh_loop(1)
             gc.collect()
-            print(gc.mem_free())
         except Exception as e:
             print("error occurred in weather_board")
             print(e)
@@ -133,7 +137,6 @@ while True:
             gc.collect()
             display.show(metro_board.display(refresh_trains()))
             gc.collect()
-            print(gc.mem_free())
         except Exception as e:
             print("error occurred in train_board")
             print(e)
