@@ -25,9 +25,16 @@ try:
 except Exception as e:
     print("watcher not set up")
 
-network = Network(status_neopixel=board.NEOPIXEL)
-
-network.fetch("http://example.com")
+try:
+    network = Network(status_neopixel=board.NEOPIXEL)
+    network.fetch("http://example.com")
+except Exception as e:
+    print(e)
+    w_timeout = 1
+    w.timeout = w_timeout
+    w.mode = WatchDogMode.RESET
+    w.feed()
+    time.sleep(10)
 
 display = display_util.create_display()
 
