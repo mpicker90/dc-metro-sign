@@ -9,20 +9,35 @@ from adafruit_matrixportal.network import Network
 from microcontroller import watchdog as w
 from watchdog import WatchDogMode
 
-from config import config
-from metro_board import TrainBoard
-from weather_board import WeatherBoard
-from pong_board import PongBoard
-from station_changer import Station_Changer
-from metro_api import MetroApi, MetroApiOnFireException
-from weather_api import WeatherApi, WeatherApiOnFireException
+from secrets import secrets
 
-print("start: " + str(gc.mem_free()))
-network = Network(status_neopixel=board.NEOPIXEL)
-network.fetch("http://example.com")
-print("network: " + str(gc.mem_free()))
+from config import config
+import metro_board
+import weather_board
+import weather_api
+import station_changer
+from pong_board import PongBoard
+from metro_api import MetroApi, MetroApiOnFireException
+from weather_api import WeatherApiOnFireException
+
+try:
+    w.feed()
+except Exception as e:
+    print("watcher not set up")
+
+try:
+    network = Network(status_neopixel=board.NEOPIXEL)
+    network.fetch("http://example.com")
+except Exception as e:
+    print(e)
+    w_timeout = 1
+    w.timeout = w_timeout
+    w.mode = WatchDogMode.RESET
+    w.feed()
+    time.sleep(10)
+
 display = display_util.create_display()
-print("display: " + str(gc.mem_free()))
+
 STATION_LIST = config['station_list']
 STATION_LIST_INDEX = 0
 
@@ -35,35 +50,38 @@ button_down = digitalio.DigitalInOut(board.BUTTON_DOWN)
 button_down.direction = digitalio.Direction.INPUT
 button_down.pull = digitalio.Pull.UP
 
-w.timeout = 15
+w_timeout = 15
+w.timeout = w_timeout
 w.mode = WatchDogMode.RESET
 
+w.feed()
 
 def refresh_loop(wait_time: int):
     global STATION_LIST_INDEX
-    global train_board
-    global weather_board
-    global w
-
     i = 0
+    button_pressed = False
+
     while i < wait_time:
         w.feed()
         i += 1
-        try:
-            weather_board.update_time()
-        except Exception as e:
-            print(e)
-        if not button_up.value:
-            STATION_LIST_INDEX = station_changer_board.change_station(STATION_LIST_INDEX)
+        while not button_up.value:
+            button_pressed = True
+            STATION_LIST_INDEX, parent_group = station_changer.update(STATION_LIST, STATION_LIST_INDEX)
+            display.show(parent_group)
+            time.sleep(1)
         if not button_down.value:
-            train_board = None
-            weather_board = None
             gc.collect()
             PongBoard(display, w)
         time.sleep(1)
+        if button_pressed:
+            break
 
 
 def refresh_trains() -> [dict]:
+    return _refresh_trains(0)
+
+
+def _refresh_trains(i: int):
     global STATION_LIST
     global STATION_LIST_INDEX
     try:
@@ -71,44 +89,62 @@ def refresh_trains() -> [dict]:
                                                 STATION_LIST[STATION_LIST_INDEX][1], network)
     except MetroApiOnFireException:
         print('WMATA Api is currently on fire. Trying again later ...')
-        return None
+        handle_bad_requests(i)
+        return _refresh_trains(i + 1)
 
 
 def refresh_weather() -> [dict]:
+    return _refresh_weather(0)
+
+
+def _refresh_weather(i: int) -> [dict]:
     try:
-        return WeatherApi.fetch_weather_predictions(network)
+        return weather_api.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
         print('Weather Api is currently on fire. Trying again later ...')
-        return None
+        handle_bad_requests(i)
+        return _refresh_weather(i + 1)
 
 
-print("pre boards: " + str(gc.mem_free()))
-train_board = TrainBoard(refresh_trains, display)
-print("train board: " + str(gc.mem_free()))
-weather_board = WeatherBoard(refresh_weather, display)
-print("weather boards: " + str(gc.mem_free()))
-station_changer_board = Station_Changer(STATION_LIST, button_up, display)
-print("station changer: " + str(gc.mem_free()))
+def handle_bad_requests(reset_times):
+    global network
+    if reset_times >= 3:
+        print("To many retries restarting")
+        time.sleep(w_timeout + 10)
 
+    print("Bad response reattempting connection")
+    w.feed()
+    network._wifi.esp.reset()
+    network._wifi.esp.connect(secrets)
+
+
+gc.collect()
+print("pre loop ", gc.mem_free())
 while True:
-    try:
-        print(gc.mem_free())
-        gc.collect()
-        print(gc.mem_free())
-        weather_board.refresh()
-    except Exception as e:
-        print("error occurred in weather_board")
-        print(e)
-    refresh_loop(120)
+    weather_board_time = time.time()
+    data = refresh_weather()
+    gc.collect()
+
+    print("after weather call ", gc.mem_free())
+
+    while time.time() - weather_board_time <= 180:
+        w.feed()
+        try:
+            gc.collect()
+            display.show(weather_board.display(data))
+            refresh_loop(1)
+            gc.collect()
+        except Exception as e:
+            print("error occurred in weather_board")
+            print(e)
 
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:
-            print(gc.mem_free())
             gc.collect()
-            print(gc.mem_free())
-            train_board.refresh()
+            display.show(metro_board.display(refresh_trains()))
+            gc.collect()
         except Exception as e:
             print("error occurred in train_board")
             print(e)
-        refresh_loop(5)
+        refresh_loop(15)

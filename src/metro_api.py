@@ -20,9 +20,8 @@ class MetroApi:
 
             return normalized_results
         except RuntimeError as e:
-            print('Failed to connect to WMATA API.')
+            print('Failed to connect to Metro API.')
             print(e)
-            network._wifi.esp.reset()
             raise MetroApiOnFireException()
 
     def _normalize_train_response(train: dict) -> dict:
