@@ -3,7 +3,6 @@ import board
 import rgbmatrix
 import framebufferio
 from config import config
-from adafruit_matrixportal.matrix import Matrix
 
 def create_display():
     try:

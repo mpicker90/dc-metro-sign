@@ -127,7 +127,7 @@ while True:
 
     print("after weather call ", gc.mem_free())
 
-    while time.time() - weather_board_time <= 180:
+    while time.time() - weather_board_time <= 10:
         w.feed()
         try:
             gc.collect()
@@ -141,8 +141,12 @@ while True:
     train_board_time = time.time()
     while time.time() - train_board_time <= 300:
         try:
+
             gc.collect()
+            print("before metro call ", gc.mem_free())
             display.show(metro_board.display(refresh_trains()))
+            print("after metro call ", gc.mem_free())
+
             gc.collect()
         except Exception as e:
             print("error occurred in train_board")

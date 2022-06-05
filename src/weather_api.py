@@ -20,7 +20,8 @@ def fetch_weather_predictions(network) -> [dict]:
         current_value = network.fetch(api_url).json()
         print('Received response from Weather api...')
         normalized_results = _normalize_weather_response(current_value)
-
+        current_value = None
+        gc.collect()
         return normalized_results
     except RuntimeError as e:
         print('Failed to connect to Weather API.')
