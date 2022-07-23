@@ -127,7 +127,7 @@ while True:
 
     print("after weather call ", gc.mem_free())
 
-    while time.time() - weather_board_time <= 10:
+    while time.time() - weather_board_time <= 120:
         w.feed()
         try:
             gc.collect()

@@ -32,7 +32,9 @@ def _normalize_weather_response(weather: dict) -> dict:
     if 'current' in weather:
         temp = str(weather['current']['temp']).split('.')[0]
         description = weather['current']['weather'][0]['main']
-        time_sec =weather['current']['dt']
+        if description == 'Thunderstorm':
+            description = 'Thunder'
+        time_sec = weather['current']['dt']
     else:
         temp = "--"
         description = "--"
