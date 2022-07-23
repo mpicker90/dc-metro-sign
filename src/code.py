@@ -115,21 +115,21 @@ def handle_bad_requests(reset_times):
 gc.collect()
 logger.mem("pre main loop")
 while True:
-    # weather_board_time = time.time()
-    # data = refresh_weather()
-    # gc.collect()
-    #
-    # logger.mem("after weather call")
-    # while time.time() - weather_board_time <= 120:
-    #     watcher_util.feed()
-    #     try:
-    #         gc.collect()
-    #         display.show(weather_board.display(data))
-    #         refresh_loop(1)
-    #         gc.collect()
-    #     except Exception as e:
-    #         logger.error("error occurred in weather_board")
-    #         logger.error(e)
+    weather_board_time = time.time()
+    data = refresh_weather()
+    gc.collect()
+
+    logger.mem("after weather call")
+    while time.time() - weather_board_time <= 120:
+        watcher_util.feed()
+        try:
+            gc.collect()
+            display.show(weather_board.display(data))
+            refresh_loop(1)
+            gc.collect()
+        except Exception as e:
+            logger.error("error occurred in weather_board")
+            logger.error(e)
 
     train_board_time = time.time()
     while time.time() - train_board_time <= 180:
