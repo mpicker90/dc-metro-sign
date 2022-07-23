@@ -52,7 +52,7 @@ def build_train(datum, row):
         else:
             dest = datum['car_length'] + "   " + dest
             destination_label.x = 20  # 43
-
+            
         destination_label.y = y
         destination_label.color = config['orange']
         destination_label.text = dest + minutes_str
@@ -63,3 +63,4 @@ def build_train(datum, row):
     except Exception as e:
         print(e)
     return group
+    

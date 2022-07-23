@@ -143,3 +143,4 @@ while True:
             logger.error("error occurred in metro_board")
             logger.error(e)
         refresh_loop(15)
+
