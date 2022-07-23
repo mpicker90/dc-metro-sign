@@ -14,7 +14,7 @@ config = {
     'metro_api_url': 'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/',
     'weather_api_url': 'http://api.openweathermap.org/data/2.5/onecall?',
     'weather_location': 'Washington DC, US',
-    'weather_lon': '77.03214',
+    'weather_lon': '-77.03214',
     'weather_lat': '38.90688',
 
     # Display Settings
