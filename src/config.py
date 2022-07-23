@@ -24,8 +24,8 @@ config = {
     # Display Settings
     'matrix_width': 128,
     'num_trains': 3,
-    'font': bitmap_font.load_font('lib/6x10.bdf'),
-
+    'font': bitmap_font.load_font('6x10.bdf'),
+    'min_label_characters': 3,
     'character_width': 6,
     'character_height': 7,
     'text_padding': 1,

@@ -19,8 +19,8 @@ def set_top_line(data):
     time_change = int(time.monotonic() - data['init_time'])
     current_time = int(data['time_sec'] + time_change)
     formatted_time = _get_time(current_time, data['time_offset'])
-    rain_str = (' ' * (5 - len(data['rain']))) + str(data['rain']) + 'mm♀'
-    temp_str = data['temp'].split('.')[0] + '°F'
+    rain_str = (' ' * (4 - len(data['rain']))) + str(data['rain']) + 'mm' + data['rain_icon']
+    temp_str = data['temp'] + '°F' + data['temp_icon']
 
     top_line = formatted_time + "  " + temp_str + rain_str
 
