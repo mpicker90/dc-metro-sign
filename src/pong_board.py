@@ -8,7 +8,6 @@ import adafruit_lis3dh
 import logger
 import watcher_util
 from adafruit_display_text import bitmap_label
-from adafruit_display_shapes.rect import Rect
 from config import config
 import time
 import board
@@ -28,9 +27,17 @@ class PongBoard:
         self.score_label.color = config['silver']
         self.score_label.text = "0"
 
-        self.ball_label = Rect(10, 16, 2, 2, fill=config['silver'])
+        self.ball_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.ball_label.x = 10
+        self.ball_label.y = 14
+        self.ball_label.color = config['silver']
+        self.ball_label.text = "ó"
 
-        self.paddle_label = Rect(2, 14, 2, 5, fill=config['silver'])
+        self.paddle_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        self.paddle_label.x = 2
+        self.paddle_label.y = 14
+        self.paddle_label.color = config['silver']
+        self.paddle_label.text = "ò"
 
         self.parent_group.append(self.score_label)
         self.parent_group.append(self.ball_label)
@@ -38,7 +45,7 @@ class PongBoard:
         self.display.show(self.parent_group)
 
         self.x_movement = 1
-        self.y_movement = 1
+        self.y_movement = -1
         self.score = 0
         self.sleep_time = 0.05
         self.previous_x_accel = 0
@@ -58,14 +65,14 @@ class PongBoard:
             move = 1
             if acc_z > 3:
                 move = 2
-            if self.paddle_label.y <= 26:
+            if self.paddle_label.y <= 30:
                 self.paddle_label.y = self.paddle_label.y + move
 
         if acc_z < -1.5:
             move = 1
             if acc_z < -3:
                 move = 2
-            if self.paddle_label.y > 0:
+            if self.paddle_label.y > 4:
                 self.paddle_label.y = self.paddle_label.y - move
 
         self.previous_x_accel = acc_x
@@ -75,7 +82,7 @@ class PongBoard:
     def move_ball(self):
         if self.hit_back_wall():
             self.x_movement = self.x_movement * -1
-            self.ball_label.x = 124
+            self.ball_label.x = 126
 
         if self.hit_paddle():
             logger.debug("hit paddle")
@@ -88,12 +95,12 @@ class PongBoard:
         if self.hit_ceiling():
             logger.debug("hit ceiling")
             self.y_movement = self.y_movement * -1
-            self.ball_label.y = 0
+            self.ball_label.y = 4
 
         if self.hit_floor():
             logger.debug("hit floor")
             self.y_movement = self.y_movement * -1
-            self.ball_label.y = 31
+            self.ball_label.y = 34
 
         if self.hit_player_wall():
             logger.debug("hit player wall")
@@ -102,20 +109,20 @@ class PongBoard:
             self.score_label.text = str(self.score)
             self.x_movement = 1
             self.y_movement = 1
+            self.sleep_time = 0.05
             return
 
         self.ball_label.x += self.x_movement
         self.ball_label.y += self.y_movement
 
     def hit_back_wall(self):
-        if self.ball_label.x >= 125 and self.x_movement > 0:
-            logger.debugnt("hit back wall", self.ball_label.x, self.x_movement)
-            return True;
+        if self.ball_label.x >= 126 and self.x_movement > 0:
+            return True
         return False
 
     def hit_player_wall(self):
         if self.ball_label.x <= 0 and self.x_movement < 0:
-            return True;
+            return True
         return False
 
     def hit_paddle(self):
@@ -125,11 +132,11 @@ class PongBoard:
         return False
 
     def hit_ceiling(self):
-        if self.ball_label.y <= 0:
-            return True;
+        if self.ball_label.y <= 4:
+            return True
         return False
 
     def hit_floor(self):
-        if self.ball_label.y >= 31:
-            return True;
+        if self.ball_label.y >= 34:
+            return True
         return False

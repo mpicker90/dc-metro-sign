@@ -28,39 +28,36 @@ def display(data):
 
 def build_train(datum, row):
     group = displayio.Group()
-    try:
-        destination_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+    destination_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
 
-        y = int(config['character_height'] + config['text_padding']) * (row + 1) + config['base_offset']
-        line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-        line_label.x = 2 #1
-        line_label.y = y
-        line_label.color = datum['line_color']
-        line_label.text = datum['line']
+    y = int(config['character_height'] + config['text_padding']) * (row + 1) + config['base_offset']
+    line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+    line_label.x = 2 #1
+    line_label.y = y
+    line_label.color = datum['line_color']
+    line_label.text = datum['line']
 
-        minutes_str = ' ' * (config['min_label_characters'] - len(datum['arrival'])) + str(datum['arrival'])
-        dest = datum['destination'] + (11 - len(datum['destination'])) * ' '
+    minutes_str = ' ' * (config['min_label_characters'] - len(datum['arrival'])) + str(datum['arrival'])
+    dest = datum['destination'] + (11 - len(datum['destination'])) * ' '
 
-        if datum['car_length'] == '8':
-            car_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-            car_label.x = 20  # 21
-            car_label.y = y
-            car_label.color = datum['car_color']
-            car_label.text = datum['car_length']
-            group.append(car_label)
-            destination_label.x = 44
-        else:
-            dest = datum['car_length'] + "   " + dest
-            destination_label.x = 20  # 43
-            
-        destination_label.y = y
-        destination_label.color = config['orange']
-        destination_label.text = dest + minutes_str
+    if datum['car_length'] == '8':
+        car_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+        car_label.x = 20  # 21
+        car_label.y = y
+        car_label.color = datum['car_color']
+        car_label.text = datum['car_length']
+        group.append(car_label)
+        destination_label.x = 44
+    else:
+        dest = datum['car_length'] + "   " + dest
+        destination_label.x = 20  # 43
 
-        group.append(line_label)
-        group.append(destination_label)
-        gc.collect()
-    except Exception as e:
-        print(e)
+    destination_label.y = y
+    destination_label.color = config['orange']
+    destination_label.text = dest + minutes_str
+
+    group.append(line_label)
+    group.append(destination_label)
+    gc.collect()
     return group
     

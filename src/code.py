@@ -8,6 +8,7 @@ import display_util
 from adafruit_matrixportal.network import Network
 
 from secrets import secrets
+import displayio
 
 from config import config
 import metro_board
@@ -20,6 +21,9 @@ from pong_board import PongBoard
 from metro_api import MetroApi, MetroApiOnFireException
 from weather_api import WeatherApiOnFireException
 
+display = display_util.create_display()
+display.show(displayio.Group())
+
 try:
     watcher_util.feed()
 except Exception as e:
@@ -31,8 +35,6 @@ try:
 except Exception as e:
     logger.error(e)
     watcher_util.force_restart()
-
-display = display_util.create_display()
 
 STATION_LIST = config['station_list']
 STATION_LIST_INDEX = 0
@@ -120,7 +122,7 @@ while True:
     gc.collect()
 
     logger.mem("after weather call")
-    while time.time() - weather_board_time <= 120:
+    while time.time() - weather_board_time <= config['weather_display_time']:
         watcher_util.feed()
         try:
             gc.collect()
@@ -132,7 +134,7 @@ while True:
             logger.error(e)
 
     train_board_time = time.time()
-    while time.time() - train_board_time <= 180:
+    while time.time() - train_board_time <= config['train_display_time']:
         try:
             gc.collect()
             logger.mem("before metro call")
@@ -143,4 +145,7 @@ while True:
             logger.error("error occurred in metro_board")
             logger.error(e)
         refresh_loop(15)
+
+    display.show(displayio.Group())
+    gc.collect()
 
