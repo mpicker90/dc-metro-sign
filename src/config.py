@@ -1,6 +1,10 @@
 from adafruit_bitmap_font import bitmap_font
 
 config = {
+
+    'auto_restart': False,
+    'log_level': 'DEBUG',
+
     #########################
     # Metro Configuration   #
     #########################

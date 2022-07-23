@@ -4,6 +4,9 @@ from adafruit_debug_i2c import DebugI2C
 import busio
 import display_util
 import adafruit_lis3dh
+
+import logger
+import watcher_util
 from adafruit_display_text import bitmap_label
 from adafruit_display_shapes.rect import Rect
 from config import config
@@ -12,7 +15,7 @@ import board
 
 
 class PongBoard:
-    def __init__(self, display, w):
+    def __init__(self, display):
         self.i2c = DebugI2C(busio.I2C(board.SCL, board.SDA))
         self.int1 = digitalio.DigitalInOut(board.ACCELEROMETER_INTERRUPT)
         self.accelerometer = adafruit_lis3dh.LIS3DH_I2C(self.i2c, address=0x19, int1=self.int1)
@@ -46,8 +49,7 @@ class PongBoard:
             self.move_paddle()
             self.move_ball()
             time.sleep(self.sleep_time)
-            w.feed()
-
+            watcher_util.feed()
 
     def move_paddle(self):
         acc_x, acc_y, acc_z = self.accelerometer.acceleration
@@ -76,7 +78,7 @@ class PongBoard:
             self.ball_label.x = 124
 
         if self.hit_paddle():
-            print("hit paddle")
+            logger.debug("hit paddle")
             self.x_movement = self.x_movement * -1
             self.score += 1
             self.score_label.text = str(self.score)
@@ -84,17 +86,17 @@ class PongBoard:
                 self.sleep_time = self.sleep_time - 0.01
 
         if self.hit_ceiling():
-            print("hit ceiling")
+            logger.debug("hit ceiling")
             self.y_movement = self.y_movement * -1
             self.ball_label.y = 0
 
         if self.hit_floor():
-            print("hit floor")
+            logger.debug("hit floor")
             self.y_movement = self.y_movement * -1
             self.ball_label.y = 31
 
         if self.hit_player_wall():
-            print("hit player wall")
+            logger.debug("hit player wall")
             self.ball_label.x = 10
             self.score = 0
             self.score_label.text = str(self.score)
@@ -107,7 +109,7 @@ class PongBoard:
 
     def hit_back_wall(self):
         if self.ball_label.x >= 125 and self.x_movement > 0:
-            print("hit back wall", self.ball_label.x, self.x_movement)
+            logger.debugnt("hit back wall", self.ball_label.x, self.x_movement)
             return True;
         return False
 
