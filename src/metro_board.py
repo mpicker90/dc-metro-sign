@@ -57,3 +57,4 @@ def build_train(datum, row):
     group.append(destination_label)
     gc.collect()
     return group
+    

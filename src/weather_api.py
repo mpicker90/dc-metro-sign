@@ -64,3 +64,4 @@ def _get_chance_of_rain(predictions) -> int:
     for prediction in predictions:
         total_chance += prediction['precipitation']
     return total_chance
+    
