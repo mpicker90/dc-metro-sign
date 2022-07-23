@@ -20,7 +20,8 @@ def fetch_weather_predictions(network) -> [dict]:
         current_value = network.fetch(api_url).json()
         print('Received response from Weather api...')
         normalized_results = _normalize_weather_response(current_value)
-
+        current_value = None
+        gc.collect()
         return normalized_results
     except RuntimeError as e:
         print('Failed to connect to Weather API.')
@@ -31,7 +32,9 @@ def _normalize_weather_response(weather: dict) -> dict:
     if 'current' in weather:
         temp = str(weather['current']['temp']).split('.')[0]
         description = weather['current']['weather'][0]['main']
-        time_sec =weather['current']['dt']
+        if description == 'Thunderstorm':
+            description = 'Thunder'
+        time_sec = weather['current']['dt']
     else:
         temp = "--"
         description = "--"
@@ -61,3 +64,4 @@ def _get_chance_of_rain(predictions) -> int:
     for prediction in predictions:
         total_chance += prediction['precipitation']
     return total_chance
+    
