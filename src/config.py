@@ -1,6 +1,10 @@
 from adafruit_bitmap_font import bitmap_font
 
 config = {
+
+    'auto_restart': True,
+    'log_level': 'INFO',
+
     #########################
     # Metro Configuration   #
     #########################
@@ -26,22 +30,6 @@ config = {
     'character_height': 7,
     'text_padding': 1,
     'base_offset': 3,
-
-    'line_header': 'LN',
-    'car_header': 'CAR',
-    'destination_header': 'DEST',
-    'min_header': 'MIN',
-
-    'loading_destination_text': 'Loading',
-    'loading_min_text': '---',
-    'loading_line_text': '--',
-
-    'train_line_height': 6,
-    'train_line_width': 2,
-
-    'car_length_max_characters': 3,
-    'min_label_characters': 3,
-    'destination_max_characters': 16,
 
     'red': 0xFF0000,
     'orange': 0xFF5500,

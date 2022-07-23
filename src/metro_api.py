@@ -1,5 +1,8 @@
+import logger
 from config import config
 from secrets import secrets
+import gc
+
 
 class MetroApiOnFireException(Exception):
     pass
@@ -12,16 +15,19 @@ class MetroApi:
                 'api_key': secrets['metro_api_key']
             }).json()
 
-            print('Received response from WMATA api...')
-
+            logger.info('Received response from WMATA api...')
+            logger.debug(train_data)
             trains = filter(lambda t: t['Group'] == group, train_data['Trains'])
 
             normalized_results = list(map(MetroApi._normalize_train_response, trains))
-
+            train_data = None
+            trains = None
+            gc.collect
+            logger.debug(normalized_results)
             return normalized_results
         except RuntimeError as e:
-            print('Failed to connect to Metro API.')
-            print(e)
+            logger.error('Failed to connect to Metro API.')
+            logger.error(e)
             raise MetroApiOnFireException()
 
     def _normalize_train_response(train: dict) -> dict:
