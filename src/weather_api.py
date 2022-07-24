@@ -27,7 +27,7 @@ def fetch_weather_predictions(network) -> [dict]:
         current_value = None
         gc.collect()
         return normalized_results
-    except RuntimeError as e:
+    except Exception as e:
         logger.error('Failed to connect to Weather API.')
         logger.error(e)
         raise WeatherApiOnFireException()

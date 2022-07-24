@@ -25,7 +25,7 @@ class MetroApi:
             gc.collect
             logger.debug(normalized_results)
             return normalized_results
-        except RuntimeError as e:
+        except Exception as e:
             logger.error('Failed to connect to Metro API.')
             logger.error(e)
             raise MetroApiOnFireException()

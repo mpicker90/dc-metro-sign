@@ -1,28 +1,31 @@
-# DC Metro Board
+from adafruit_matrixportal.network import Network
+
 import time
 import board
 import digitalio
+import displayio
 import gc
 
-import display_util
-from adafruit_matrixportal.network import Network
 
-from secrets import secrets
-import displayio
 
-from config import config
 import metro_board
 import logger
 import weather_board
 import weather_api
 import station_changer
 import watcher_util
+import display_util
+
 from pong_board import PongBoard
 from metro_api import MetroApi, MetroApiOnFireException
 from weather_api import WeatherApiOnFireException
+from secrets import secrets
+from config import config
 
+logger.mem("Init")
 display = display_util.create_display()
 display.show(displayio.Group())
+logger.mem("After display")
 
 try:
     watcher_util.feed()
@@ -36,6 +39,7 @@ except Exception as e:
     logger.error(e)
     watcher_util.force_restart()
 
+logger.mem("After Network")
 STATION_LIST = config['station_list']
 STATION_LIST_INDEX = 0
 

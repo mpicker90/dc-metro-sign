@@ -4,7 +4,7 @@ config = {
 
     'auto_restart': True,
     'log_level': 'ERROR',
-    'weather_display_time': 10,
+    'weather_display_time': 120,
     'train_display_time': 180,
     #########################
     # Metro Configuration   #
