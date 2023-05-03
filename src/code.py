@@ -75,11 +75,7 @@ def refresh_loop(wait_time: int):
             break
 
 
-def refresh_trains() -> [dict]:
-    return _refresh_trains(0)
-
-
-def _refresh_trains(i: int):
+def refresh_trains(i: int = 0):
     global STATION_LIST
     global STATION_LIST_INDEX
     try:
@@ -88,20 +84,16 @@ def _refresh_trains(i: int):
     except MetroApiOnFireException:
         logger.error('WMATA Api is currently on fire. Trying again later ...')
         handle_bad_requests(i)
-        return _refresh_trains(i + 1)
+        return refresh_trains(i + 1)
 
 
-def refresh_weather() -> [dict]:
-    return _refresh_weather(0)
-
-
-def _refresh_weather(i: int) -> [dict]:
+def refresh_weather(i: int =0) -> [dict]:
     try:
         return weather_api.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
         logger.error('Weather Api is currently on fire. Trying again later ...')
         handle_bad_requests(i)
-        return _refresh_weather(i + 1)
+        return refresh_weather(i + 1)
 
 
 def handle_bad_requests(reset_times):
@@ -110,10 +102,11 @@ def handle_bad_requests(reset_times):
         logger.error("To many retries restarting")
         watcher_util.force_restart()
 
-    logger.info("Bad response reattempting connection")
+    logger.error("Bad response reattempting connection")
     watcher_util.feed()
-    network._wifi.esp.reset()
+    network._wifi.esp.disconnect()
     network._wifi.esp.connect(secrets)
+    network._wifi.esp.reset()
     network.fetch("http://example.com")
     watcher_util.feed()
 
@@ -131,11 +124,11 @@ while True:
         try:
             gc.collect()
             display.show(weather_board.display(data))
-            refresh_loop(1)
             gc.collect()
         except Exception as e:
             logger.error("error occurred in weather_board")
             logger.error(e)
+        refresh_loop(1)
 
     train_board_time = time.time()
     while time.time() - train_board_time <= config['train_display_time']:
@@ -148,8 +141,19 @@ while True:
         except Exception as e:
             logger.error("error occurred in metro_board")
             logger.error(e)
-        refresh_loop(15)
+        refresh_loop(config['train_api_wait_time'])
 
     display.show(displayio.Group())
     gc.collect()
-
+    try:
+        current_time = time.localtime(
+            int(data['time_sec'] + (int(time.monotonic() - data['init_time']))) + data['time_offset'])
+        display_off_time = display_util.turn_off_display(current_time)
+        if display_off_time > 0:
+            refresh_loop(display_off_time)
+            on_time = time.localtime(
+                int(data['time_sec'] + (int(time.monotonic() - data['init_time']))) + data['time_offset'])
+            logger.debug(f"turning display on at {on_time}")
+    except Exception as e:
+        logger.error("error occurred turning off display")
+        logger.error(e)

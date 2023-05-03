@@ -4,14 +4,15 @@ import display_util
 from adafruit_display_text import bitmap_label
 from config import config
 
+
 def display(data):
     parent_group = displayio.Group()
 
     parent_group.append(set_top_line(data))
-    parent_group.append(set_date(data))
-    parent_group.append(set_description(data))
+    # parent_group.append(set_date(data))
+    # parent_group.append(set_description(data))
+    parent_group.append(set_second_line(data))
     parent_group.append(set_location(data))
-
     return parent_group
 
 
@@ -31,24 +32,40 @@ def set_top_line(data):
     top_line_label.text = top_line
     return top_line_label
 
-def set_description(data):
-    description_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-    description_label.x = display_util.right_center(data['description'])
-    description_label.y = 13 + config['base_offset']
-    description_label.color = config['orange']
-    description_label.text = data['description']
-    return description_label
 
-def set_date(data):
-    date_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
-    date_label.y = config['base_offset'] + 13
-    date_label.color = config['orange']
+# def set_description(data):
+#     description_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+#     description_label.x = display_util.right_center(data['description'])
+#     description_label.y = 13 + config['base_offset']
+#     description_label.color = config['orange']
+#     description_label.text = data['description']
+#     return description_label
+#
+#
+# def set_date(data):
+#     date_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+#     date_label.y = config['base_offset'] + 13
+#     date_label.color = config['orange']
+#     time_change = time.monotonic() - data['init_time']
+#     current_time = data['time_sec'] + time_change
+#     formatted_dt = _get_date(current_time, data['time_offset'])
+#     date_label.text = formatted_dt
+#     date_label.x = display_util.left_center(formatted_dt)
+#     return date_label
+
+
+def set_second_line(data):
+    second_line_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
+    second_line_label.y = config['base_offset'] + 13
+    second_line_label.color = config['orange']
     time_change = time.monotonic() - data['init_time']
     current_time = data['time_sec'] + time_change
     formatted_dt = _get_date(current_time, data['time_offset'])
-    date_label.text = formatted_dt
-    date_label.x = display_util.left_center(formatted_dt)
-    return date_label
+    remaining_char = int((23 - len(formatted_dt) - len(data['description'])) / 2)
+    second_line_label.text = formatted_dt + (' ' * remaining_char) + data['description']
+    second_line_label.x = config['base_offset'] + 2
+    return second_line_label
+
 
 def set_location(data):
     location_label = bitmap_label.Label(config['font'], anchor_point=(0, 0))
@@ -57,6 +74,7 @@ def set_location(data):
     location_label.color = config['orange']
     location_label.text = config['weather_location']
     return location_label
+
 
 def _get_mon_abrv(mon: int) -> str:
     dict = {

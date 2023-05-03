@@ -1,9 +1,9 @@
-import time
-
 import logger
+import time
+import gc
+import math
 from config import config
 from secrets import secrets
-import gc
 
 
 class WeatherApiOnFireException(Exception):
@@ -22,7 +22,7 @@ def fetch_weather_predictions(network) -> [dict]:
         api_url += "&appid=" + secrets["openweather_token"]
         current_value = network.fetch(api_url).json()
         logger.info('Received response from Weather api...')
-        logger.debug(current_value)
+        # logger.debug(current_value)
         normalized_results = _normalize_weather_response(current_value)
         current_value = None
         gc.collect()
@@ -52,12 +52,12 @@ def _normalize_weather_response(weather: dict) -> dict:
     if 'minutely' in weather:
         chance_of_rain = str(_get_chance_of_rain(weather['minutely'])).split('.')[0]
         rain_icon = _get_rain_icon(_get_chance_of_rain(weather['minutely']))
+    elif 'hourly' in weather:
+        chance_of_rain = str(weather['hourly'][0]['pop'])
+        rain_icon = _get_rain_icon(weather['hourly'][0]['pop'])
     else:
         chance_of_rain = "--"
         rain_icon = 'ô'
-
-    if 'hourly' in weather:
-        chance_of_rain = str(weather['hourly'][0]['pop'])
 
     formatted_response = {
         'temp': temp,
@@ -81,14 +81,15 @@ def _get_chance_of_rain(predictions) -> int:
 
 
 def _get_temp_icon(temp) -> str:
-    if temp <= 32:
-        return 'ø'
-    elif temp <= 60:
-        return '÷'
-    elif temp <= 80:
-        return 'ö'
+    thermo_icons = ['ø', 'ï', '÷', 'ö', 'ñ', 'õ']
+    if temp <= config['min_temp']:
+        return thermo_icons[0]
+    elif temp >= config['max_temp']:
+        return thermo_icons[-1]
     else:
-        return 'õ'
+        thermo_icon = math.ceil(
+            (temp - config['min_temp']) / ((config['max_temp'] - config['min_temp']) / (len(thermo_icons) - 2)))
+        return thermo_icons[thermo_icon]
 
 
 def _get_rain_icon(rain) -> str:
