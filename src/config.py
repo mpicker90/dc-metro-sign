@@ -23,7 +23,7 @@ config = {
     #########################
     'max_temp': 90,
     'min_temp': 32,
-    'train_api_wait_time': 10,
+    'train_api_wait_time': 15,
     'auto_restart': True,
     'log_level': 'ERROR',
     'metro_api_url': 'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/',

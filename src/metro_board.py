@@ -19,8 +19,10 @@ def display(data):
     for i in range(len(data)):
         logger.error(data[i])
         wait_time = data[i]['arrival']
-        if wait_time == "ARR" or wait_time == "BRD":
+        if wait_time == "ARR" or wait_time == "BRD" or (wait_time == "DLY" and i == 0):
             wait_time = 0
+        if wait_time == "DLY" and i != 0:
+            wait_time = int(data[i-1]['arrival']+1)
         if int(wait_time) >= config['min_wait_time']:
             first_train_over_wait_time = i
             break
