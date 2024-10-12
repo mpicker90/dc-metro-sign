@@ -16,7 +16,7 @@ class MetroApi:
             }).json()
 
             logger.info('Received response from WMATA api...')
-            logger.debug(train_data)
+            #logger.debug(train_data)
             trains = filter(lambda t: t['Group'] == group, train_data['Trains'])
 
             normalized_results = list(map(MetroApi._normalize_train_response, trains))
@@ -42,7 +42,7 @@ class MetroApi:
         return {
             'line_color': MetroApi._get_line_color(line),
             'line': line,
-            'destination': destination,
+            'destination': destination.replace("'",""),
             'arrival': arrival,
             'car_length': car,
             'car_color': MetroApi._get_car_color(car)

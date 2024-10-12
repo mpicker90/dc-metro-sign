@@ -15,10 +15,29 @@ def display(data):
     header_label.x = 2 #1
     header_label.y = config['base_offset']
     parent_group.append(header_label)
+    first_train_over_wait_time = -1
+    for i in range(len(data)):
+        logger.error(data[i])
+        wait_time = data[i]['arrival']
+        if wait_time == "ARR" or wait_time == "BRD" or (wait_time == "DLY" and i == 0):
+            wait_time = 0
+        if wait_time == "DLY" and i != 0:
+            wait_time = int(data[i-1]['arrival']+1)
+        if int(wait_time) >= config['min_wait_time']:
+            first_train_over_wait_time = i
+            break
+
+    remainder = len(data) - 1 - first_train_over_wait_time
+
+    if remainder <= config['num_trains']:
+        first_train_over_wait_time -= remainder
+        if first_train_over_wait_time < 0:
+            first_train_over_wait_time = 0
+
     for i in range(config['num_trains']):
-        if i < len(data):
+        if i + first_train_over_wait_time < len(data):
             logger.mem("adding train")
-            parent_group.append(build_train(data[i], i))
+            parent_group.append(build_train(data[i + first_train_over_wait_time], i))
             logger.debug(f"train added {i}")
             gc.collect()
     logger.debug("trains added")
