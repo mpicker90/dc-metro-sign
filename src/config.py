@@ -27,7 +27,7 @@ config = {
     'auto_restart': True,
     'log_level': 'ERROR',
     'metro_api_url': 'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/',
-    'weather_api_url': 'http://api.openweathermap.org/data/2.5/onecall?',
+    'weather_api_url': 'https://api.openweathermap.org/data/3.0/onecall?',
     'weather_location': 'Washington DC, US',
     'weather_lon': '-77.03217746105503',
     'weather_lat': '38.90688172534281',

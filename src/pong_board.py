@@ -42,7 +42,7 @@ class PongBoard:
         self.parent_group.append(self.score_label)
         self.parent_group.append(self.ball_label)
         self.parent_group.append(self.paddle_label)
-        self.display.show(self.parent_group)
+        self.display.root_group = self.parent_group
 
         self.x_movement = 1
         self.y_movement = -1

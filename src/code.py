@@ -6,8 +6,6 @@ import digitalio
 import displayio
 import gc
 
-
-
 import metro_board
 import logger
 import weather_board
@@ -24,7 +22,7 @@ from config import config
 
 logger.mem("Init")
 display = display_util.create_display()
-display.show(displayio.Group())
+display.root_group = displayio.Group()
 logger.mem("After display")
 
 try:
@@ -65,7 +63,7 @@ def refresh_loop(wait_time: int):
         while not button_up.value:
             button_pressed = True
             STATION_LIST_INDEX, parent_group = station_changer.update(STATION_LIST, STATION_LIST_INDEX)
-            display.show(parent_group)
+            display.root_group = parent_group
             time.sleep(1)
         if not button_down.value:
             gc.collect()
@@ -87,7 +85,7 @@ def refresh_trains(i: int = 0):
         return refresh_trains(i + 1)
 
 
-def refresh_weather(i: int =0) -> [dict]:
+def refresh_weather(i: int = 0) -> [dict]:
     try:
         return weather_api.fetch_weather_predictions(network)
     except WeatherApiOnFireException:
@@ -123,7 +121,7 @@ while True:
         watcher_util.feed()
         try:
             gc.collect()
-            display.show(weather_board.display(data))
+            display.root_group = weather_board.display(data)
             gc.collect()
         except Exception as e:
             logger.error("error occurred in weather_board")
@@ -135,7 +133,7 @@ while True:
         try:
             gc.collect()
             logger.mem("before metro call")
-            display.show(metro_board.display(refresh_trains()))
+            display.root_group = metro_board.display(refresh_trains())
             logger.mem("after metro call")
             gc.collect()
         except Exception as e:
@@ -143,7 +141,7 @@ while True:
             logger.error(e)
         refresh_loop(config['train_api_wait_time'])
 
-    display.show(displayio.Group())
+    display.root_group = displayio.Group()
     gc.collect()
     try:
         current_time = time.localtime(
